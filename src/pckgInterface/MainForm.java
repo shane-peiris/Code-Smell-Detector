@@ -4,6 +4,15 @@
  */
 package pckgInterface;
 
+import CoreClasses.SeperateFileContent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+
 /**
  *
  * @author Shane
@@ -26,22 +35,125 @@ public class MainForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        but_Choose_File = new javax.swing.JButton();
+        txtFileURL = new javax.swing.JTextField();
+        btnProcess = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtAreaCodeDisplay = new javax.swing.JTextArea();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        but_Choose_File.setText("Choose File");
+        but_Choose_File.setToolTipText("");
+        but_Choose_File.setActionCommand("but_Choose_File");
+        but_Choose_File.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but_Choose_FileActionPerformed(evt);
+            }
+        });
+
+        txtFileURL.setText("jTextField1");
+
+        btnProcess.setText("Process File");
+        btnProcess.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcessActionPerformed(evt);
+            }
+        });
+
+        txtAreaCodeDisplay.setColumns(20);
+        txtAreaCodeDisplay.setRows(5);
+        jScrollPane1.setViewportView(txtAreaCodeDisplay);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
+                        .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(46, 46, 46)
+                        .addComponent(but_Choose_File))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(348, 348, 348)
+                        .addComponent(btnProcess))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(77, 77, 77)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 648, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(127, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(90, 90, 90)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(but_Choose_File))
+                .addGap(37, 37, 37)
+                .addComponent(btnProcess)
+                .addGap(43, 43, 43)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void but_Choose_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but_Choose_FileActionPerformed
+        // TODO add your handling code here:
+
+        String wd = System.getProperty("user.dir");
+        JFileChooser fc = new JFileChooser(wd);
+        int rc = fc.showDialog(null, "Select Data File");
+        if (rc == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();            
+            String filename = file.getAbsolutePath().toString();
+            txtFileURL.setText(filename.toString());
+            // call your function here
+        } else {
+            //System.out.println("File chooser cancel button clicked");
+        }
+        return;
+    }//GEN-LAST:event_but_Choose_FileActionPerformed
+
+    private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
+        
+        String path="";        
+        FileReader fileRead=null;
+        String fileData="";
+        String line="";
+        try 
+        {
+                path = txtFileURL.getText();
+                fileRead = new FileReader(path);
+                BufferedReader bufferRead = new BufferedReader(fileRead);                
+                
+                //Create New Instance of Duplicate Classes
+                SeperateFileContent SFC = new SeperateFileContent();    
+                
+                while ((line=bufferRead.readLine()) != null)   
+                {
+                    SFC.FileContentLineByLine.add(line);
+                }              
+                bufferRead.close();
+                
+                for(int i=0;i<SFC.FileContentLineByLine.size();i++)
+                {
+                    fileData = fileData + SFC.getVectorLineDetails(i) + "\n";
+                }
+                
+                txtAreaCodeDisplay.setText(fileData.toString());
+                
+    }//GEN-LAST:event_btnProcessActionPerformed
+        catch (Exception ex) 
+        {
+               Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }
     /**
      * @param args the command line arguments
      */
@@ -77,5 +189,10 @@ public class MainForm extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnProcess;
+    private javax.swing.JButton but_Choose_File;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea txtAreaCodeDisplay;
+    private javax.swing.JTextField txtFileURL;
     // End of variables declaration//GEN-END:variables
 }
