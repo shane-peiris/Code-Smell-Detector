@@ -16,6 +16,7 @@ public class SeperateFileContent {
     public Vector<String> FileContentLineByLine=new Vector<String>();
     public Vector<String> FileContentLineByLineWithoutComments = new Vector<String>();
 
+    public Vector chk_class_details = new Vector<Object>();
     public Vector<Object> ClassCodeBlocks=new Vector<Object>();
 
     public String delims = "\t\n,;{}[]().-<>&^%$@!-+\\/*'~\"= ";
@@ -62,179 +63,256 @@ public class SeperateFileContent {
           curLine = curLine.replaceAll("private ","");
           curLine = curLine.replaceAll("static ","");
           curLine = curLine.trim().replace("\\s+","");
-        
+          
             //Identify Class
             //Then get entire relevant code block
             try
-          {
-          //Finds Class Type 1
-          if(curLine.matches("class (.*?)"))
-          {
-              
-              //classLineCount=0;
-              clzFlag++;
-              try
-              {
-                curClassIn = curLine.substring(6,curLine.indexOf("{"));
-              }
-              catch(Exception ex)
-              {
-                curClassIn = curLine.substring(6);
-              }
-              curClassIn = curClassIn.replace("{", "");
-              curClassIn = curClassIn.replace(" ", "");
-             // System.out.println(curClassIn);
-              
-              
-              if((curLine.matches("class (.*?)"))& (curLine.contains("{")))
-              {
-                  level++;
-                  clzFlag++;
-                 // System.out.println("------Inside class:------");  
-                  
-                  return "class";
-              }
-            
-            
-          } 
-          
-          
-          //Find Constructor Type 1
-          else if(((curLine.matches(curClassIn+"\\s+\\((.*?)\\)(.*?)"))|(curLine.matches(curClassIn+"\\((.*?)\\)(.*?)"))) & (level==1))
-          {
-              meth++;  
-              //methodLineCount=0; 
-                //methodName = mLine.substring(0,mLine.indexOf("("));
-                //System.out.println(methodName);
-                //cd[classCount-1].methDefinition.add(methodName);
+            {
+            //Finds Class Type 1
+            if(curLine.matches("class (.*?)"))
+            {
 
-                //md[methodCount+1] = new MethodDefinition();
-               // md[methodCount+1].methodName = methodName;
-               // md[methodCount+1].returnType = "Null";
-                //md[methodCount+1].methodLineCount=methodLineCount;
-                //md[methodCount+1].methodLineCount=methodLineCount;  
-              if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
-              {
-                  level++;
-                  meth++;
-                  //methodCount++;
-                  
-                  
-                  return "method";
-                  //System.out.println("***Inside Method***");
-              } 
-              else
-              {
-                  //meth--;
-              }
-              
-              if(meth==2)
-              {
-                   
-              }
-              
-              
-          }        
-          
-          //Finn Method Type 1
-          else if(curLine.matches("(.*?)\\((.*?)\\)(.*?)") & (level==1) )
-          {
-              meth++; 
-              //methodLineCount=0;
-              
-                //retType = mLine.substring(0,mLine.indexOf(" "));
-               // System.out.println(retType);
-                //curLine = curLine.replace(retType + " ", "");                       
+                //classLineCount=0;
+                clzFlag++;
+                try
+                {
+                    curClassIn= curLine.substring(6,curLine.indexOf(" ", 6));
+                }
+                catch(Exception ex)
+                {
+                    curClassIn= curLine.substring(6);
+                }
+                chk_class_details.add("CN - " + curClassIn);
 
-                //methodName = mLine.substring(0,mLine.indexOf("("));
-               // System.out.println(methodName);
 
-                //cd[classCount-1].methDefinition.add(methodName);
-     
-                //md[methodCount+1] = new MethodDefinition();
-                //md[methodCount+1].methodName = methodName;
-                //md[methodCount+1].returnType = retType;
-                //md[methodCount+1].methodLineCount=methodLineCount;
-                  
-              if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
-              {
-                  level++;
-                  meth++;
-                 // methodCount++;
-                  //cd[classCount-1].methDefs.add(methodName);
-                  return "method";
-                 // System.out.println("***Inside Method:***");
-              }   
-              else
-              {
-                  //meth--;
-              }
-              
-              if(meth==2)                  
-              {
-                    
-              }
-          }
-          //Finn Method Type 2
-          else if((meth==1) & (curLine.contains("{")))
-          {
-              level++;
-              meth++;
-              //methodCount++;
-              return "method";
-              //System.out.println("***Inside Method:***");
-          }
-          
-          //Find Class Type 2
-          else if(clzFlag==1 & curLine.contains("{"))
-          {
-              level++;
-              clzFlag=2;
-              return "class";
-             // System.out.println("------Inside class:------");              
-          }
-          else if((curLine.contains("{")))
-          {
-              level++;
-              meth++;
-          }
-          else if((curLine.contains("}")))
-          {
-              level--;
-              meth--;
-              if(meth==1 & level==1)
-              {
-                  try
-                  {
-                    //md[methodCount].methodLineCount = methodLineCount;
-                  }
-                  catch(Exception ex){}
-              }
-              if(meth==1)
-              {
-                  meth=0;
-              }
-              if(level==0)
-              {
-                  meth=0;
-                  clzFlag=0;
-                  level=0;
-                  //cd[classCount-1].classLineCount = classLineCount;
-              }          
-          }
-          
-          if(meth>=1 & !curLine.equals(""))
-          {
-              //methodLineCount++;
-              //System.out.println("meth lines"+methodLineCount);
-          }
-          if(clzFlag>=1 & !curLine.equals(""))
-              {
-                 //classLineCount++;
-                // System.out.println("line:"+mLine);
-                // System.out.println("/nTotla Number of lines:"+classLineCount);
-              
-              }
+
+
+                if(curLine.matches("class (.*?) extends (.*?)"))
+                {
+                    if(curLine.matches("class (.*?) extends (.*?) implements (.*?)"))
+                    {
+                        curLine = curLine.replace("class", "");
+                        curLine = curLine.replace(curClassIn, "");
+
+                        chk_class_details.add("PC - " + curLine.substring(curLine.indexOf("extends")+8,curLine.indexOf("implements")));
+
+                        String[] interfaces=curLine.substring(curLine.indexOf("implements")+11).split(",");
+
+                        for (int i=0; i<interfaces.length;i++)
+                        {
+                            chk_class_details.add("I - " + interfaces[i]);                    
+                        }
+
+                        chk_class_details.add("O - " + " ");
+
+
+                    }
+                    else
+                    {            
+                        curClassIn= curLine.substring(curLine.indexOf("extends")+8);
+
+                        chk_class_details.add("PC - " + curClassIn);
+                        chk_class_details.add("I - " + " ");
+                        chk_class_details.add("O - " + " ");
+                    }
+                }
+                else if(curLine.matches("class (.*?) implements (.*?)"))
+                {
+                    curClassIn= curLine.substring(6, curLine.indexOf("implements"));
+
+                    curLine = curLine.replace("class", "");
+                    curLine = curLine.replace("implements", "");
+                    curLine = curLine.replace(curClassIn, "");
+                    curLine = curLine.replace(" ", "");
+
+                    chk_class_details.add("PC - " + " ");
+
+                    String[] interfaces=curLine.split(",");
+
+                    for (int i=0; i<interfaces.length;i++)
+                    {
+                        chk_class_details.add("I - " + interfaces[i]);
+                    }
+
+                    chk_class_details.add("O - " + " ");
+
+                }
+                else if(curLine.matches("class (.*?)"))
+                {            
+                    curClassIn= curLine.substring(6);
+                    chk_class_details.add("PC - " + " ");
+                    chk_class_details.add("I - " + " ");
+                    chk_class_details.add("O - Object");
+                }          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                curClassIn = curClassIn.replace("{", "");
+                curClassIn = curClassIn.replace(" ", "");
+               // System.out.println(curClassIn);
+
+
+                if((curLine.matches("class (.*?)"))& (curLine.contains("{")))
+                {
+                    level++;
+                    clzFlag++;
+                   // System.out.println("------Inside class:------");  
+
+                    return "class";
+                }
+
+
+            } 
+
+
+            //Find Constructor Type 1
+            else if(((curLine.matches(curClassIn+"\\s+\\((.*?)\\)(.*?)"))|(curLine.matches(curClassIn+"\\((.*?)\\)(.*?)"))) & (level==1))
+            {
+                meth++;  
+                //methodLineCount=0; 
+                  //methodName = mLine.substring(0,mLine.indexOf("("));
+                  //System.out.println(methodName);
+                  //cd[classCount-1].methDefinition.add(methodName);
+
+                  //md[methodCount+1] = new MethodDefinition();
+                 // md[methodCount+1].methodName = methodName;
+                 // md[methodCount+1].returnType = "Null";
+                  //md[methodCount+1].methodLineCount=methodLineCount;
+                  //md[methodCount+1].methodLineCount=methodLineCount;  
+                if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
+                {
+                    level++;
+                    meth++;
+                    //methodCount++;
+
+
+                    return "method";
+                    //System.out.println("***Inside Method***");
+                } 
+                else
+                {
+                    //meth--;
+                }
+
+                if(meth==2)
+                {
+
+                }
+
+
+            }        
+
+            //Finn Method Type 1
+            else if(curLine.matches("(.*?)\\((.*?)\\)(.*?)") & (level==1) )
+            {
+                meth++; 
+                //methodLineCount=0;
+
+                  //retType = mLine.substring(0,mLine.indexOf(" "));
+                 // System.out.println(retType);
+                  //curLine = curLine.replace(retType + " ", "");                       
+
+                  //methodName = mLine.substring(0,mLine.indexOf("("));
+                 // System.out.println(methodName);
+
+                  //cd[classCount-1].methDefinition.add(methodName);
+
+                  //md[methodCount+1] = new MethodDefinition();
+                  //md[methodCount+1].methodName = methodName;
+                  //md[methodCount+1].returnType = retType;
+                  //md[methodCount+1].methodLineCount=methodLineCount;
+
+                if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
+                {
+                    level++;
+                    meth++;
+                   // methodCount++;
+                    //cd[classCount-1].methDefs.add(methodName);
+                    return "method";
+                   // System.out.println("***Inside Method:***");
+                }   
+                else
+                {
+                    //meth--;
+                }
+
+                if(meth==2)                  
+                {
+
+                }
+            }
+            //Finn Method Type 2
+            else if((meth==1) & (curLine.contains("{")))
+            {
+                level++;
+                meth++;
+                //methodCount++;
+                return "method";
+                //System.out.println("***Inside Method:***");
+            }
+
+            //Find Class Type 2
+            else if(clzFlag==1 & curLine.contains("{"))
+            {
+                level++;
+                clzFlag=2;
+                return "class";
+               // System.out.println("------Inside class:------");              
+            }
+            else if((curLine.contains("{")))
+            {
+                level++;
+                meth++;
+            }
+            else if((curLine.contains("}")))
+            {
+                level--;
+                meth--;
+                if(meth==1 & level==1)
+                {
+                    try
+                    {
+                      //md[methodCount].methodLineCount = methodLineCount;
+                    }
+                    catch(Exception ex){}
+                }
+                if(meth==1)
+                {
+                    meth=0;
+                }
+                if(level==0)
+                {
+                    meth=0;
+                    clzFlag=0;
+                    level=0;
+                    //cd[classCount-1].classLineCount = classLineCount;
+                }          
+            }
+
+            if(meth>=1 & !curLine.equals(""))
+            {
+                //methodLineCount++;
+                //System.out.println("meth lines"+methodLineCount);
+            }
+            if(clzFlag>=1 & !curLine.equals(""))
+                {
+                   //classLineCount++;
+                  // System.out.println("line:"+mLine);
+                  // System.out.println("/nTotla Number of lines:"+classLineCount);
+
+                }
           }
           catch(Exception ex)
           {}
