@@ -19,9 +19,9 @@ import javax.swing.JFileChooser;
  */
 public class MainForm extends javax.swing.JFrame {
 
-    /**
+/**
      * Creates new form MainForm
-     */
+*/
     public MainForm() {
         initComponents();
     }
@@ -40,6 +40,8 @@ public class MainForm extends javax.swing.JFrame {
         btnProcess = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaCodeDisplay = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtAreaClassPreview = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -62,40 +64,44 @@ public class MainForm extends javax.swing.JFrame {
         });
 
         txtAreaCodeDisplay.setColumns(20);
+        txtAreaCodeDisplay.setLineWrap(true);
         txtAreaCodeDisplay.setRows(5);
         jScrollPane1.setViewportView(txtAreaCodeDisplay);
+
+        txtAreaClassPreview.setColumns(20);
+        txtAreaClassPreview.setRows(5);
+        jScrollPane2.setViewportView(txtAreaClassPreview);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(90, 90, 90)
                         .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46)
-                        .addComponent(but_Choose_File))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(348, 348, 348)
-                        .addComponent(btnProcess))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 648, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(127, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(but_Choose_File)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnProcess)))
+                .addContainerGap(210, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(90, 90, 90)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(but_Choose_File))
-                .addGap(37, 37, 37)
-                .addComponent(btnProcess)
-                .addGap(43, 43, 43)
+                    .addComponent(but_Choose_File)
+                    .addComponent(btnProcess))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -138,14 +144,22 @@ public class MainForm extends javax.swing.JFrame {
                     SFC.FileContentLineByLine.add(line);
                 }              
                 bufferRead.close();
-                
-                for(int i=0;i<SFC.FileContentLineByLine.size();i++)
+                SFC.ScanContent();
+                for(int i=0;i<SFC.FileContentLineByLineWithoutComments.size();i++)
                 {
-                    fileData = fileData + SFC.getVectorLineDetails(i) + "\n";
+                    fileData = fileData + SFC.getVectorLineDetailsWithoutComments(i) + "\n";
                 }
                 
                 txtAreaCodeDisplay.setText(fileData.toString());
                 
+                String classList="";
+                
+                for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
+                {
+                    classList = classList + SFC.getClassList(i) + "\n";
+                }
+                
+                txtAreaClassPreview.setText(classList);
     }//GEN-LAST:event_btnProcessActionPerformed
         catch (Exception ex) 
         {
@@ -192,6 +206,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton btnProcess;
     private javax.swing.JButton but_Choose_File;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea txtAreaClassPreview;
     private javax.swing.JTextArea txtAreaCodeDisplay;
     private javax.swing.JTextField txtFileURL;
     // End of variables declaration//GEN-END:variables

@@ -1,0 +1,80 @@
+class ClassDefinition
+{       
+
+
+
+    
+	public String parent_class,tt,kks;
+    	
+    	
+    	public int test=0,th=0;
+    	public float test2=0;
+
+    ClassDefinition(String reuben, int lloyd)
+{public String parent_class="";
+/*fsdgdsg
+dsg*/
+/*fsdgdsgdsg*/
+
+public String parent_class="";
+System.out.println(cur_line);
+	parent_class="";
+    }
+    public String getParentClassName(String shane, int shevon)
+    {    
+public String class_name="";
+
+	if(x=3)
+	{
+		if(x=4)
+		{
+
+		}
+	}
+
+        return parent_class;
+    }
+    
+    public Vector getInterfaceNames()
+    {    
+public float test2=0;
+        return interf_names;
+    }
+    
+    public Vector getMethodDefinitions()
+    {
+        return method_names;
+    }
+}
+
+class MethodDefinition
+{
+    
+     
+    
+    public String getMethodName(String spo, int jkj)
+    {public String method_name="";
+        return method_name;
+
+
+
+
+
+
+
+    }
+
+    public String getReturnType()
+    {
+public String return_type="";  
+        return return_type;
+	if(x=3)
+	{
+
+	}
+    } 
+
+public String getReturnType3()    
+{return return_type;} 
+	
+}
