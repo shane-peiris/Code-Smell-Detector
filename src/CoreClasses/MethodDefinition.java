@@ -18,10 +18,16 @@ public class MethodDefinition {
     public String content="";
     public int meth_line=0;
     public int max_meth_nest_depth=0;
+    public String methType="";
     
     public String getMethodName()
     {    
         return method_name;
+    }
+    
+    public String getMethType()
+    {    
+        return methType;
     }
 
     public String getReturnType()

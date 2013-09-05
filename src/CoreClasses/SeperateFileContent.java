@@ -17,7 +17,9 @@ public class SeperateFileContent {
     public Vector<String> FileContentLineByLineWithoutComments = new Vector<String>();
 
     public Vector chk_class_details = new Vector<Object>();
+    public Vector chk_method_details = new Vector<Object>();
     public Vector<Object> ClassCodeBlocks=new Vector<Object>();
+    public Vector<Object> MethodCodeBlocks=new Vector<Object>();
 
     public String delims = "\t\n,;{}[]().-<>&^%$@!-+\\/*'~\"= ";
     public int fw_flag_c=0;
@@ -29,8 +31,8 @@ public class SeperateFileContent {
     public int meth=0;
     public int countNum=1;
     public String curClassIn="";
-    public int classLineCount;
-    public int methodLineCount;
+    public int LineCount;
+    //public int methodLineCount;
     
     public void addMethodToVector(int i)
     {}
@@ -49,14 +51,22 @@ public class SeperateFileContent {
     public void addVaraibleToVector(int i)
     {}
     
-    public String getClassList(int i) 
+    public ClassDefinition getClassDetails(int i) 
     {
-        return ClassCodeBlocks.elementAt(i).toString();
+        return (ClassDefinition)ClassCodeBlocks.elementAt(i);
+    }
+    
+    public MethodDefinition getMethodDetails(int i) 
+    {
+        return (MethodDefinition)MethodCodeBlocks.elementAt(i);
     }
     
     
     public String getCodeBlockType(String curLine)
     {
+        
+        String methodName="";
+        String retType="";
         
           curLine = curLine.replaceAll("public ","");
           curLine = curLine.replaceAll("protected ","");
@@ -182,9 +192,9 @@ public class SeperateFileContent {
             {
                 meth++;  
                 //methodLineCount=0; 
-                  //methodName = mLine.substring(0,mLine.indexOf("("));
+                  methodName = curLine.substring(0,curLine.indexOf("("));
                   //System.out.println(methodName);
-                  //cd[classCount-1].methDefinition.add(methodName);
+                  chk_method_details.add(methodName);
 
                   //md[methodCount+1] = new MethodDefinition();
                  // md[methodCount+1].methodName = methodName;
@@ -220,18 +230,18 @@ public class SeperateFileContent {
                 meth++; 
                 //methodLineCount=0;
 
-                  //retType = mLine.substring(0,mLine.indexOf(" "));
+                  retType = curLine.substring(0,curLine.indexOf(" "));
                  // System.out.println(retType);
-                  //curLine = curLine.replace(retType + " ", "");                       
+                  curLine = curLine.replace(retType + " ", "");                       
 
-                  //methodName = mLine.substring(0,mLine.indexOf("("));
+                  methodName = curLine.substring(0,curLine.indexOf("("));
                  // System.out.println(methodName);
 
-                  //cd[classCount-1].methDefinition.add(methodName);
+                  chk_method_details.add(methodName);
 
                   //md[methodCount+1] = new MethodDefinition();
                   //md[methodCount+1].methodName = methodName;
-                  //md[methodCount+1].returnType = retType;
+                  chk_method_details.add(retType);
                   //md[methodCount+1].methodLineCount=methodLineCount;
 
                 if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
@@ -308,7 +318,7 @@ public class SeperateFileContent {
             }
             if(clzFlag>=1 & !curLine.equals(""))
                 {
-                   //classLineCount++;
+                  /// classLineCount++;
                   // System.out.println("line:"+mLine);
                   // System.out.println("/nTotla Number of lines:"+classLineCount);
 
@@ -353,7 +363,7 @@ public class SeperateFileContent {
         int level=0;
         String mLine="";
         String blockDetails="";
-        
+        LineCount=0;
        
         
         for(int i=sPos;i<FileContentLineByLineWithoutComments.size();i++)
@@ -379,13 +389,16 @@ public class SeperateFileContent {
               level--;     
           }
           
+          blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
+          x++;
+          LineCount++;
+          
           if((level==0) & !(x==0))
           {
               break;
           }
           
-          blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
-          x++;
+          
         }
         
        
@@ -405,6 +418,77 @@ public class SeperateFileContent {
     {
         return FileContentLineByLineWithoutComments.elementAt(pos).toString();
     }
+    
+    public MethodDefinition SeperateMethodDetails(MethodDefinition md_temp)
+    {
+        md_temp = new MethodDefinition();
+        
+        md_temp.method_name = chk_method_details.elementAt(0).toString();
+        try
+        {
+        md_temp.return_type = chk_method_details.elementAt(1).toString();
+        md_temp.methType = "Normal";
+        }
+        catch(Exception ex)
+        {
+        md_temp.return_type="";
+        md_temp.methType = "Constructor";
+        }
+        
+        return md_temp;
+    }
+    
+    public ClassDefinition SeperateClassDetails(ClassDefinition cd_temp)
+    {
+        int ele_id=0;
+            if(!(chk_class_details.elementAt(ele_id).toString().substring(5)).equals(" "))
+            {
+                cd_temp = new ClassDefinition();
+
+                //Show Class Name
+
+                cd_temp.class_name = chk_class_details.elementAt(ele_id).toString().substring(5);
+                //System.out.println(file_class_Details.elementAt(ele_id).toString().substring(5) );
+
+                ele_id++;
+
+                //Show Parent Class
+
+                cd_temp.parent_class = chk_class_details.elementAt(ele_id).toString().substring(5);
+                //System.out.println(file_class_Details.elementAt(ele_id+1).toString().substring(5));
+
+                ele_id++;
+
+                while((chk_class_details.elementAt(ele_id).toString().contains("I - ")))
+                {
+                    if(!(chk_class_details.elementAt(ele_id).toString().substring(4).equals(" ")))
+                    {
+                        //String t = chk_class_details.elementAt(ele_id).toString().substring(4);
+                        cd_temp.interf_names.add(chk_class_details.elementAt(ele_id).toString().substring(4));
+                        
+                    }
+                    ele_id++;
+                }
+
+                //Show Elements in interfaces
+
+                //System.out.println(cd_temp[cd_count].interf_names.size());
+
+
+
+                if((cd_temp.parent_class).equals(""))
+                {
+                    cd_temp.parent_class = chk_class_details.elementAt(ele_id).toString().substring(4);
+                    //System.out.println(cd_temp[cd_count].parent_class );
+                }
+
+
+                
+            }
+            return cd_temp;
+    }
+    
+    
     
     public void ScanContent()
     {
@@ -469,6 +553,7 @@ public class SeperateFileContent {
             
         }
         
+        int classCount=0;
         for(i=0;i<FileContentLineByLineWithoutComments.size();i++)
         {
             String blockType = getCodeBlockType(FileContentLineByLineWithoutComments.elementAt(i)).toString();
@@ -476,11 +561,30 @@ public class SeperateFileContent {
             switch(blockType) {
                 case "class":
                     
-                    ClassDefinition cd = new ClassDefinition();                    
+                    ClassDefinition cd = new ClassDefinition();  
+                    cd = SeperateClassDetails(cd);
                     cd.content = (getEntireCodeBlock(i-1, "class")).toString();
-                    cd.class_name=curClassIn.toString();   
-                    cd.class_line = classLineCount;
+                    //cd.class_name=curClassIn.toString();   
+                    cd.class_line = LineCount;
                     ClassCodeBlocks.add(cd);
+                    chk_class_details.clear();
+                    classCount++;
+                    break;
+                    
+                    case "method":
+                    
+                    MethodDefinition md = new MethodDefinition();  
+                    md = SeperateMethodDetails(md);
+                    md.content = (getEntireCodeBlock(i-1, "method")).toString();
+                    //cd.class_name=curClassIn.toString();  
+                    
+                    md.meth_line = LineCount;
+                    ClassDefinition cdTemp = (ClassDefinition) ClassCodeBlocks.elementAt(classCount-1);
+                    cdTemp.method_names.add(md);
+                    ClassCodeBlocks.removeElementAt(classCount-1);
+                    ClassCodeBlocks.add(classCount-1, cdTemp);
+                    MethodCodeBlocks.add(md);
+                    chk_method_details.clear();
                     break;
             }
                     
