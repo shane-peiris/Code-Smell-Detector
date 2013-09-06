@@ -44,12 +44,14 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaCodeDisplay = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        txtAreaClassPreview = new javax.swing.JTextArea();
-        cmbClassList = new javax.swing.JComboBox();
+        txtCodeBlockPreview = new javax.swing.JTextArea();
+        cmdSelectedDataList = new javax.swing.JComboBox();
         cmdMethodList = new javax.swing.JComboBox();
         btnGetCode = new javax.swing.JButton();
+        cmdType = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         but_Choose_File.setText("Choose File");
         but_Choose_File.setToolTipText("");
@@ -59,8 +61,6 @@ public class MainForm extends javax.swing.JFrame {
                 but_Choose_FileActionPerformed(evt);
             }
         });
-
-        txtFileURL.setText("jTextField1");
 
         btnProcess.setText("Process File");
         btnProcess.addActionListener(new java.awt.event.ActionListener() {
@@ -74,20 +74,35 @@ public class MainForm extends javax.swing.JFrame {
         txtAreaCodeDisplay.setRows(5);
         jScrollPane1.setViewportView(txtAreaCodeDisplay);
 
-        txtAreaClassPreview.setColumns(20);
-        txtAreaClassPreview.setRows(5);
-        jScrollPane2.setViewportView(txtAreaClassPreview);
+        txtCodeBlockPreview.setColumns(20);
+        txtCodeBlockPreview.setRows(5);
+        jScrollPane2.setViewportView(txtCodeBlockPreview);
 
-        cmbClassList.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbClassListItemStateChanged(evt);
+        cmdSelectedDataList.setEnabled(false);
+        cmdSelectedDataList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cmdSelectedDataListMouseClicked(evt);
             }
         });
+        cmdSelectedDataList.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmdSelectedDataListItemStateChanged(evt);
+            }
+        });
+
+        cmdMethodList.setEnabled(false);
 
         btnGetCode.setText("Get Code");
         btnGetCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGetCodeActionPerformed(evt);
+            }
+        });
+
+        cmdType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Select Type", "Class", "Method", "For", "If", "While", "Repeat Until" }));
+        cmdType.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmdTypeItemStateChanged(evt);
             }
         });
 
@@ -98,21 +113,26 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 547, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cmdSelectedDataList, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cmdMethodList, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cmdType, javax.swing.GroupLayout.Alignment.LEADING, 0, 303, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(113, 113, 113)
+                                .addComponent(btnGetCode, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(but_Choose_File)
                         .addGap(18, 18, 18)
-                        .addComponent(btnProcess))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(cmbClassList, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cmdMethodList, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnGetCode, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(256, Short.MAX_VALUE))
+                        .addComponent(btnProcess)))
+                .addContainerGap(267, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,15 +143,21 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(but_Choose_File)
                     .addComponent(btnProcess))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbClassList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmdMethodList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGetCode))
-                .addGap(28, 28, 28)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(36, 36, 36))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cmdType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14)
+                        .addComponent(cmdSelectedDataList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cmdMethodList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnGetCode)
+                        .addGap(38, 38, 38)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(210, Short.MAX_VALUE))))
         );
 
         pack();
@@ -191,11 +217,7 @@ public class MainForm extends javax.swing.JFrame {
 //                
 //                txtAreaClassPreview.setText(classList);
                 
-                for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
-                {
-                    //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
-                    cmbClassList.addItem(SFC.getClassDetails(i).class_name.toString());
-                }
+                
                 
          
         
@@ -207,56 +229,168 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnProcessActionPerformed
 
-    private void cmbClassListItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbClassListItemStateChanged
+    
+    public void fillComboBox(String Type)
+    {
+        switch (Type) {
+            case "class":
+                for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
+                {
+                    //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
+                    cmdSelectedDataList.addItem(SFC.getClassDetails(i).class_name.toString());
+                }
+                break;
+            case "method":
+                for(int i=0;i<SFC.MethodCodeBlocks.size();i++)
+                {
+                    //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
+                    cmdSelectedDataList.addItem(SFC.getMethodDetails(i).method_name.toString());
+                }
+                break;
+        }
+    
+    
+    }
+    
+    
+    private void cmdSelectedDataListItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmdSelectedDataListItemStateChanged
         // TODO add your handling code here:
         
-        String classN = cmbClassList.getSelectedItem().toString();
+//        String classN = cmdSelectedDataList.getSelectedItem().toString();
+//        
+//        int mCount=0;
+//        cmdMethodList.removeAllItems();
+//        for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
+//        {
+//            //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
+//
+//            if(SFC.getClassDetails(i).class_name.toString().equals(classN))
+//            {
+//                for(int m=0;m<(SFC.getClassDetails(i).method_names.size());m++)
+//                {
+//                cmdMethodList.addItem(((MethodDefinition)SFC.getClassDetails(i).method_names.elementAt(mCount)).method_name);
+//                 mCount++;
+//                }
+//
+//            }
+//           
+//            //cmbClassList.addItem(SFC.getClassDetails(i).class_name.toString());
+//        }
         
-        int mCount=0;
-        cmdMethodList.removeAllItems();
-        for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
-        {
-            //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
+        
+    }//GEN-LAST:event_cmdSelectedDataListItemStateChanged
 
-            if(SFC.getClassDetails(i).class_name.toString().equals(classN))
-            {
-                for(int m=0;m<(SFC.getClassDetails(i).method_names.size());m++)
+    
+    public void displayCodeBlock(String Type)
+    {
+        switch (Type) {
+            case "class":
+                String classN = cmdSelectedDataList.getSelectedItem().toString();
+                for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
                 {
-                cmdMethodList.addItem(((MethodDefinition)SFC.getClassDetails(i).method_names.elementAt(mCount)).method_name);
-                 mCount++;
+                    //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
+                    if(SFC.getClassDetails(i).class_name.toString().equals(classN))
+                    {
+                        txtCodeBlockPreview.setText(SFC.getClassDetails(i).content.toString());
+                    }
                 }
-
-            }
-           
-            //cmbClassList.addItem(SFC.getClassDetails(i).class_name.toString());
+                break;
+            case "method":
+                String methodN = cmdSelectedDataList.getSelectedItem().toString();
+                for(int i=0;i<SFC.MethodCodeBlocks.size();i++)
+                {
+                    //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
+                    if(SFC.getMethodDetails(i).method_name.toString().equals(methodN))
+                    {
+                        txtCodeBlockPreview.setText(SFC.getMethodDetails(i).content.toString());
+                    }
+                }
+                break;
         }
-        
-        
-    }//GEN-LAST:event_cmbClassListItemStateChanged
-
+    }
+    
     private void btnGetCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGetCodeActionPerformed
-        String methN = cmdMethodList.getSelectedItem().toString();
+//        String methN = cmdMethodList.getSelectedItem().toString();
+//        
+//        int mCount=0;
+//        //cmdMethodList.removeAllItems();
+//        txtAreaClassPreview.setText("");
+//        for(int i=0;i<SFC.MethodCodeBlocks.size();i++)
+//        {
+//            //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
+//
+//            if(SFC.getMethodDetails(i).method_name.toString().equals(methN))
+//            {
+//                
+//                    
+//                    
+//                txtAreaClassPreview.setText(SFC.getMethodDetails(i).content.toString());
+//                
+//
+//            }
+//           
+//            //cmbClassList.addItem(SFC.getClassDetails(i).class_name.toString());
+//        }
         
-        int mCount=0;
-        //cmdMethodList.removeAllItems();
-        txtAreaClassPreview.setText("");
-        for(int i=0;i<SFC.MethodCodeBlocks.size();i++)
+          
+        String sType = cmdType.getSelectedItem().toString();
+        sType = sType.toLowerCase();
+        
+        if(sType.equals("class"))
         {
-            //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
-
-            if(SFC.getMethodDetails(i).method_name.toString().equals(methN))
-            {
-                
-                    
-                    
-                txtAreaClassPreview.setText(SFC.getMethodDetails(i).content.toString());
-                
-
-            }
-           
-            //cmbClassList.addItem(SFC.getClassDetails(i).class_name.toString());
+            displayCodeBlock("class");
         }
+        else if(sType.equals("method"))
+        {
+            displayCodeBlock("method");
+        }
+       
     }//GEN-LAST:event_btnGetCodeActionPerformed
+
+    private void cmdTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmdTypeItemStateChanged
+        // TODO add your handling code here:
+        
+        String sItem = cmdType.getSelectedItem().toString();
+        sItem = sItem.toLowerCase();
+        
+        cmdSelectedDataList.removeAllItems();
+        
+        if(sItem.toString().equals("select type"))
+        {
+            cmdSelectedDataList.setEnabled(false);
+            //cmdMethodList.setEnabled(false);
+        }
+        else if (sItem.toString().equals("class"))
+        {
+            fillComboBox("class");
+            cmdSelectedDataList.setEnabled(true);
+            //cmdMethodList.setEnabled(false);
+        }
+        else if (sItem.toString().equals("method"))
+        {
+            fillComboBox("method");
+            cmdSelectedDataList.setEnabled(true);
+            //cmdMethodList.setEnabled(false);
+        }
+        else
+        {
+            cmdSelectedDataList.setEnabled(false);
+            //cmdMethodList.setEnabled(false);
+        }
+        
+    }//GEN-LAST:event_cmdTypeItemStateChanged
+
+    private void cmdSelectedDataListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmdSelectedDataListMouseClicked
+        // TODO add your handling code here:
+        
+//        String sItem = cmdMethodList.getSelectedItem().toString();
+//        sItem = sItem.toLowerCase();
+//        
+//        if(!(sItem.toString().equals("select type")))
+//        {
+//            cmdMethodList.setEnabled(true);
+//        }
+    }//GEN-LAST:event_cmdSelectedDataListMouseClicked
         
     /**
      * @param args the command line arguments
@@ -298,12 +432,13 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton btnGetCode;
     private javax.swing.JButton btnProcess;
     private javax.swing.JButton but_Choose_File;
-    private javax.swing.JComboBox cmbClassList;
     private javax.swing.JComboBox cmdMethodList;
+    private javax.swing.JComboBox cmdSelectedDataList;
+    private javax.swing.JComboBox cmdType;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea txtAreaClassPreview;
     private javax.swing.JTextArea txtAreaCodeDisplay;
+    private javax.swing.JTextArea txtCodeBlockPreview;
     private javax.swing.JTextField txtFileURL;
     // End of variables declaration//GEN-END:variables
 }
