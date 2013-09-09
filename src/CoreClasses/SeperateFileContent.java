@@ -335,6 +335,20 @@ public class SeperateFileContent {
                   // System.out.println("/nTotla Number of lines:"+classLineCount);
 
                 }
+            if(clzFlag==2 & meth==0)
+            {
+                countVariables("2",curLine.toString(),"global");
+            }
+
+
+            if(clzFlag>1 & meth>1)
+            {
+                countVariables("2",curLine.toString(),"local");
+            }
+            else if( (curLine.toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
+            {
+                countVariables("2",curLine.toString(),"local");
+            }
           }
           catch(Exception ex)
           {}
@@ -581,20 +595,7 @@ public class SeperateFileContent {
             
             countVariables("1",FileContentLineByLineWithoutComments.elementAt(i).toString(),"");
                         
-//           if(clzFlag==2 & meth==0)
-//            {
-//                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global");
-//            }
-//
-//
-//            if(clzFlag>1 & meth>1)
-//            {
-//                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
-//            }
-//            else if( (FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
-//            {
-//                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
-//            }
+
             
             switch(blockType) {
                 case "class":
@@ -606,6 +607,21 @@ public class SeperateFileContent {
                 cd.class_line = LineCount;
                 
                 cd.global_variables.add(tempVariableListPrimitive);
+                try
+                {
+                ClassDefinition cdTemp = (ClassDefinition) ClassCodeBlocks.elementAt(classCount-1);
+                
+                
+                
+                cdTemp.global_variables.add(tempVariableListPrimitive);
+                ClassCodeBlocks.removeElementAt(classCount-1);
+                ClassCodeBlocks.add(classCount-1, cdTemp);
+                }
+                
+                catch(Exception ex)
+                {}
+                
+                
                 tempVariableListPrimitive.removeAllElements();
                 tempVariableListParameter.removeAllElements();
                 
@@ -785,9 +801,9 @@ public class SeperateFileContent {
                                 countNum++;
                                // System.out.println(m.group(0));
                                 //System.out.println(""+countNum);   
-
+                                //variableCount++;
                                   } 
-
+                                variableCount = variableCount + countNum;
                                 dataTypesCount[j] =  dataTypesCount[j] + countNum; 
                                 break;
                             }              
