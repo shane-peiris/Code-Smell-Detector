@@ -43,12 +43,22 @@ public class MainForm extends javax.swing.JFrame {
         btnProcess = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaCodeDisplay = new javax.swing.JTextArea();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtCodeBlockPreview = new javax.swing.JTextArea();
-        cmdSelectedDataList = new javax.swing.JComboBox();
-        cmdMethodList = new javax.swing.JComboBox();
-        btnGetCode = new javax.swing.JButton();
-        cmdType = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        txtClassCount = new javax.swing.JTextField();
+        txtMethodCount = new javax.swing.JTextField();
+        txtTotalLineCountWithComments = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtVariableCount = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtConstructorCount = new javax.swing.JTextField();
+        txtFileSize = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtTotalLineCountWithoutComments = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        cmdViewCodes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -74,35 +84,27 @@ public class MainForm extends javax.swing.JFrame {
         txtAreaCodeDisplay.setRows(5);
         jScrollPane1.setViewportView(txtAreaCodeDisplay);
 
-        txtCodeBlockPreview.setColumns(20);
-        txtCodeBlockPreview.setRows(5);
-        jScrollPane2.setViewportView(txtCodeBlockPreview);
+        jLabel1.setText("Class Count : ");
 
-        cmdSelectedDataList.setEnabled(false);
-        cmdSelectedDataList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cmdSelectedDataListMouseClicked(evt);
-            }
-        });
-        cmdSelectedDataList.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmdSelectedDataListItemStateChanged(evt);
-            }
-        });
+        jLabel2.setText("Method Count :");
 
-        cmdMethodList.setEnabled(false);
+        jLabel3.setText("Total Line Count (With Comments) :");
 
-        btnGetCode.setText("Get Code");
-        btnGetCode.addActionListener(new java.awt.event.ActionListener() {
+        jLabel4.setFont(new java.awt.Font("MingLiU_HKSCS", 1, 18)); // NOI18N
+        jLabel4.setText("File Summary");
+
+        jLabel5.setText("Variable Count :");
+
+        jLabel6.setText("Constructor Count :");
+
+        jLabel7.setText("File Size :");
+
+        jLabel8.setText("Total Line Count (Without Comments) :");
+
+        cmdViewCodes.setText("View Codes");
+        cmdViewCodes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGetCodeActionPerformed(evt);
-            }
-        });
-
-        cmdType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Select Type", "Class", "Method", "For", "If", "While", "Repeat Until" }));
-        cmdType.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmdTypeItemStateChanged(evt);
+                cmdViewCodesActionPerformed(evt);
             }
         });
 
@@ -114,25 +116,55 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 547, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(but_Choose_File)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnProcess))
+                            .addComponent(jScrollPane1))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cmdSelectedDataList, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cmdMethodList, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cmdType, javax.swing.GroupLayout.Alignment.LEADING, 0, 303, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(34, 34, 34)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel3)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel5)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtConstructorCount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtTotalLineCountWithComments, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtVariableCount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(113, 113, 113)
-                                .addComponent(btnGetCode, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(but_Choose_File)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnProcess)))
-                .addContainerGap(267, Short.MAX_VALUE))
+                                .addGap(95, 95, 95)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtFileSize, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtTotalLineCountWithoutComments, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtMethodCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtClassCount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(cmdViewCodes))
+                .addContainerGap(425, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,22 +174,45 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(but_Choose_File)
                     .addComponent(btnProcess))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addGap(36, 36, 36))
+                        .addGap(37, 37, 37)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(cmdType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)
-                        .addComponent(cmdSelectedDataList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cmdMethodList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnGetCode)
-                        .addGap(38, 38, 38)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(210, Short.MAX_VALUE))))
+                        .addGap(19, 19, 19)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtClassCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtMethodCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtConstructorCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtVariableCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtTotalLineCountWithComments, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(txtTotalLineCountWithoutComments, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(txtFileSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cmdViewCodes)
+                .addContainerGap(130, Short.MAX_VALUE))
         );
 
         pack();
@@ -189,6 +244,7 @@ public class MainForm extends javax.swing.JFrame {
         try 
         {
                 path = txtFileURL.getText();
+                File f = new File(path);
                 fileRead = new FileReader(path);
                 BufferedReader bufferRead = new BufferedReader(fileRead);                
                 
@@ -203,25 +259,37 @@ public class MainForm extends javax.swing.JFrame {
                 SFC.ScanContent();
                 for(int i=0;i<SFC.FileContentLineByLineWithoutComments.size();i++)
                 {
-                    fileData = fileData + SFC.getVectorLineDetailsWithoutComments(i) + "\n";
+                    fileData = fileData + (i+1)+ " " +  SFC.getVectorLineDetailsWithoutComments(i) + "\n";
                 }
                 
                 txtAreaCodeDisplay.setText(fileData.toString());
                 
-//                String classList="";
-//                
-//                for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
-//                {
-//                    classList = classList + SFC.getClassDetails(i) + "\n";
-//                }
-//                
-//                txtAreaClassPreview.setText(classList);
+                txtClassCount.setText(String.valueOf(SFC.ClassCodeBlocks.size()));
+                
+                int mCount=0;//Method Count
+                int cCount=0;//Constructor Count
+                
+                for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+                {
+                        if(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).return_type.equals(""))
+                        {
+                            cCount++;
+                        }
+                        else
+                        {
+                            mCount++;
+                        }
+                }
+                
+                txtMethodCount.setText(String.valueOf(mCount));
+                txtConstructorCount.setText(String.valueOf(cCount));
                 
                 
                 
-         
-        
-        
+                
+                txtFileSize.setText(String.valueOf(f.length())+" bytes");
+                txtTotalLineCountWithComments.setText(String.valueOf(SFC.FileContentLineByLine.size()));
+                txtTotalLineCountWithoutComments.setText(String.valueOf(SFC.FileContentLineByLineWithoutComments.size()));
     }   
             catch (Exception ex) 
         {
@@ -229,168 +297,14 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnProcessActionPerformed
 
-    
-    public void fillComboBox(String Type)
-    {
-        switch (Type) {
-            case "class":
-                for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
-                {
-                    //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
-                    cmdSelectedDataList.addItem(SFC.getClassDetails(i).class_name.toString());
-                }
-                break;
-            case "method":
-                for(int i=0;i<SFC.MethodCodeBlocks.size();i++)
-                {
-                    //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
-                    cmdSelectedDataList.addItem(SFC.getMethodDetails(i).method_name.toString());
-                }
-                break;
-        }
-    
-    
-    }
-    
-    
-    private void cmdSelectedDataListItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmdSelectedDataListItemStateChanged
+    private void cmdViewCodesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdViewCodesActionPerformed
         // TODO add your handling code here:
         
-//        String classN = cmdSelectedDataList.getSelectedItem().toString();
-//        
-//        int mCount=0;
-//        cmdMethodList.removeAllItems();
-//        for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
-//        {
-//            //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
-//
-//            if(SFC.getClassDetails(i).class_name.toString().equals(classN))
-//            {
-//                for(int m=0;m<(SFC.getClassDetails(i).method_names.size());m++)
-//                {
-//                cmdMethodList.addItem(((MethodDefinition)SFC.getClassDetails(i).method_names.elementAt(mCount)).method_name);
-//                 mCount++;
-//                }
-//
-//            }
-//           
-//            //cmbClassList.addItem(SFC.getClassDetails(i).class_name.toString());
-//        }
+        frmCodeViewer CV = new frmCodeViewer(SFC,this);
+        CV.setVisible(true);
+        this.setVisible(false);
         
-        
-    }//GEN-LAST:event_cmdSelectedDataListItemStateChanged
-
-    
-    public void displayCodeBlock(String Type)
-    {
-        switch (Type) {
-            case "class":
-                String classN = cmdSelectedDataList.getSelectedItem().toString();
-                for(int i=0;i<SFC.ClassCodeBlocks.size();i++)
-                {
-                    //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
-                    if(SFC.getClassDetails(i).class_name.toString().equals(classN))
-                    {
-                        txtCodeBlockPreview.setText(SFC.getClassDetails(i).content.toString());
-                    }
-                }
-                break;
-            case "method":
-                String methodN = cmdSelectedDataList.getSelectedItem().toString();
-                for(int i=0;i<SFC.MethodCodeBlocks.size();i++)
-                {
-                    //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
-                    if(SFC.getMethodDetails(i).method_name.toString().equals(methodN))
-                    {
-                        txtCodeBlockPreview.setText(SFC.getMethodDetails(i).content.toString());
-                    }
-                }
-                break;
-        }
-    }
-    
-    private void btnGetCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGetCodeActionPerformed
-//        String methN = cmdMethodList.getSelectedItem().toString();
-//        
-//        int mCount=0;
-//        //cmdMethodList.removeAllItems();
-//        txtAreaClassPreview.setText("");
-//        for(int i=0;i<SFC.MethodCodeBlocks.size();i++)
-//        {
-//            //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
-//
-//            if(SFC.getMethodDetails(i).method_name.toString().equals(methN))
-//            {
-//                
-//                    
-//                    
-//                txtAreaClassPreview.setText(SFC.getMethodDetails(i).content.toString());
-//                
-//
-//            }
-//           
-//            //cmbClassList.addItem(SFC.getClassDetails(i).class_name.toString());
-//        }
-        
-          
-        String sType = cmdType.getSelectedItem().toString();
-        sType = sType.toLowerCase();
-        
-        if(sType.equals("class"))
-        {
-            displayCodeBlock("class");
-        }
-        else if(sType.equals("method"))
-        {
-            displayCodeBlock("method");
-        }
-       
-    }//GEN-LAST:event_btnGetCodeActionPerformed
-
-    private void cmdTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmdTypeItemStateChanged
-        // TODO add your handling code here:
-        
-        String sItem = cmdType.getSelectedItem().toString();
-        sItem = sItem.toLowerCase();
-        
-        cmdSelectedDataList.removeAllItems();
-        
-        if(sItem.toString().equals("select type"))
-        {
-            cmdSelectedDataList.setEnabled(false);
-            //cmdMethodList.setEnabled(false);
-        }
-        else if (sItem.toString().equals("class"))
-        {
-            fillComboBox("class");
-            cmdSelectedDataList.setEnabled(true);
-            //cmdMethodList.setEnabled(false);
-        }
-        else if (sItem.toString().equals("method"))
-        {
-            fillComboBox("method");
-            cmdSelectedDataList.setEnabled(true);
-            //cmdMethodList.setEnabled(false);
-        }
-        else
-        {
-            cmdSelectedDataList.setEnabled(false);
-            //cmdMethodList.setEnabled(false);
-        }
-        
-    }//GEN-LAST:event_cmdTypeItemStateChanged
-
-    private void cmdSelectedDataListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmdSelectedDataListMouseClicked
-        // TODO add your handling code here:
-        
-//        String sItem = cmdMethodList.getSelectedItem().toString();
-//        sItem = sItem.toLowerCase();
-//        
-//        if(!(sItem.toString().equals("select type")))
-//        {
-//            cmdMethodList.setEnabled(true);
-//        }
-    }//GEN-LAST:event_cmdSelectedDataListMouseClicked
+    }//GEN-LAST:event_cmdViewCodesActionPerformed
         
     /**
      * @param args the command line arguments
@@ -429,16 +343,26 @@ public class MainForm extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnGetCode;
     private javax.swing.JButton btnProcess;
     private javax.swing.JButton but_Choose_File;
-    private javax.swing.JComboBox cmdMethodList;
-    private javax.swing.JComboBox cmdSelectedDataList;
-    private javax.swing.JComboBox cmdType;
+    private javax.swing.JButton cmdViewCodes;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea txtAreaCodeDisplay;
-    private javax.swing.JTextArea txtCodeBlockPreview;
+    private javax.swing.JTextField txtClassCount;
+    private javax.swing.JTextField txtConstructorCount;
+    private javax.swing.JTextField txtFileSize;
     private javax.swing.JTextField txtFileURL;
+    private javax.swing.JTextField txtMethodCount;
+    private javax.swing.JTextField txtTotalLineCountWithComments;
+    private javax.swing.JTextField txtTotalLineCountWithoutComments;
+    private javax.swing.JTextField txtVariableCount;
     // End of variables declaration//GEN-END:variables
 }

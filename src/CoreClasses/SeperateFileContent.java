@@ -6,6 +6,8 @@ package CoreClasses;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -32,6 +34,10 @@ public class SeperateFileContent {
     public int countNum=1;
     public String curClassIn="";
     public int LineCount;
+    
+    public static String[] dataTypes=new String[]{"int","boolean","char","double","float","byte","short","long"};
+    public static int[] dataTypesCount=new int[]{0,0,0,0,0,0,0,0};
+    
     //public int methodLineCount;
     
     public void addMethodToVector(int i)
@@ -487,9 +493,7 @@ public class SeperateFileContent {
             }
             return cd_temp;
     }
-    
-    
-    
+     
     public void ScanContent()
     {
         int x=0;
@@ -558,6 +562,8 @@ public class SeperateFileContent {
         {
             String blockType = getCodeBlockType(FileContentLineByLineWithoutComments.elementAt(i)).toString();
             
+            countVariables(FileContentLineByLineWithoutComments.elementAt(i).toString());
+            
             switch(blockType) {
                 case "class":
                     
@@ -593,5 +599,271 @@ public class SeperateFileContent {
         
         
     }
+
+     public void primitiveDataTYpes(String[] t)
+      {
+          for(int i=0;i<t.length;i++)
+          { 
+              for(int j=0;j<dataTypes.length;j++)
+              {
+                  if(t[i].equals(dataTypes[j]))
+                  {
+                      dataTypesCount[j] =  dataTypesCount[j] + 1;                    
+                  }              
+              }
+          }    
+      }
+      
+     public  void countVariables(String val, String line)
+     {
+      
+         String pat="(.*?),"; 
+         String pat1="(.*?);";  
+         Pattern p = Pattern.compile(pat);
+         Pattern p1 = Pattern.compile(pat1);
+         
+        
+        String newLine=line;
+          newLine = newLine.replaceAll("public ","");
+          newLine = newLine.replaceAll("protected ","");
+          newLine = newLine.replaceAll("private ","");
+          newLine = newLine.replaceAll("static ","");
+          
+          Matcher m = p.matcher(newLine);
+         Matcher m1 = p1.matcher(newLine);
+         // System.out.println(mLine);
+          
+          //mLine = mLine.trim().replace("\\s+", "");
+         
+         if(newLine.matches("(.*?)\\((.*?)\\)(.*?)"))
+         {
+                
+                newLine = newLine.replaceAll("\\(", "\\( ");
+                
+                if(newLine.matches("(.*?)for\\((.*?)\\)(.*?)"))
+                {
+                    
+                    m1 = p1.matcher(newLine);
+//                    System.out.println(newLine);  
+                    while(m1.find())
+                    {
+                        
+                        
+                        //System.out.println(m1.group(1)+ "-------------------------------- Primitive 1");
+                        if(val.equals("2"))
+                            extractVarDetails(m1.group(1),"Primitive");
+                        else
+                        {                        
+                            String[] tokens=m1.group(1).split("\\s+");   
+                            primitiveDataTYpes(tokens);
+                        }
+                    }
+//                    System.out.println(line);  
+                }
+                else
+                {
+                   newLine = newLine.replaceAll("\\)", ",\\)");
+                    m = p.matcher(newLine);
+                    
+                    while(m.find())
+                    {
+                        //System.out.println(newLine); 
+                        String[] tokens=m.group(1).split("\\s+");   
+                        
+                        if(val.equals("2"))
+                        {
+                            try
+                            {
+                                if(!(m.group(1).matches("(.*?)\\(\\s+")))
+                                {
+                                    //System.out.println(m.group(1)+ "-------------------------------- Parameter 2");
+                                    extractVarDetails(m.group(1),"Parameter");
+                                }
+                            }
+                            catch(Exception ex)
+                            {}
+                        }
+                        else
+                        {     
+							if(!(m.group(1).matches("(.*?)\\(\\s+")))
+                                {
+                            primitiveDataTYpes(tokens);
+							}
+                        }
+                    }
+                
+                }
+                
+                
+                
+         }
+         if((newLine.contains(",")))
+         {
+              while(m1.find())
+                {
+                 String[] tokens=m1.group(1).split("\\s+"); 
+                 
+                 
+                 
+                 //System.out.println(m1.group(1)+ "-------------------------------- Primitive 3");
+                if(val.equals("2"))
+                {
+                    extractVarDetails(m1.group(1),"Primitive");
+                }
+                else
+                {
+                 
+                    for(int i=0;i<tokens.length;i++)
+                    { 
+                        for(int j=0;j<dataTypes.length;j++)
+                        {
+                            if(tokens[i].equals(dataTypes[j]))
+                            {
+
+                                while (m.find()) {
+                                countNum++;
+                               // System.out.println(m.group(0));
+                                //System.out.println(""+countNum);   
+
+                                  } 
+
+                                dataTypesCount[j] =  dataTypesCount[j] + countNum; 
+                                break;
+                            }              
+                        }
+
+                    }  
+                }
+                 countNum=1; 
+                
+            }
+         }
+         else
+         {
+             while(m1.find())
+            {
+                
+                if(val.equals("2"))
+                {
+                    if(!(m1.group(1).matches("(.*?)\\s+return\\s+(.*?)")))
+                    {
+                        //System.out.println(m1.group(1)+ "-------------------------------- Primitive 4");
+                        extractVarDetails(m1.group(1),"Primitive");
+                    }
+                }
+                else
+                {
+                    String[] tokens=m1.group(1).split("\\s+");
+                    primitiveDataTYpes(tokens);
+                }
+
+            }
+         }
+              
+           countNum=1;   
+         
+     }
     
+     public void extractVarDetails(String dataLine, String vType)
+     {
+         String varName="";
+         String varType="";
+         Vector tempVars = new Vector<String>();
+         
+         
+         dataLine = dataLine.trim().replaceAll("(.*?)\\(", "");
+         dataLine = dataLine.trim().replaceAll("\\{", "");
+         dataLine = dataLine.trim().replaceAll("\\}", "");
+         //dataLine = dataLine.trim().replaceAll(" ", "");
+         //dataLine = dataLine.trim().replaceAll("return\\s+(.*?)", "");
+         //dataLine = dataLine.trim().replace("\\s+", "");
+        try
+        { 
+            for(int j=0;j<dataTypes.length;j++)
+            {
+
+                    if(dataLine.substring(0,dataLine.indexOf(" ")).equals(dataTypes[j]))
+                    {
+
+
+
+                        varType = dataLine.substring(0,dataLine.indexOf(" "));
+
+
+                        dataLine = dataLine.trim().replaceAll(varType+" ", "");
+
+                        //Many Variables in One Line
+
+                        String[] tokens=dataLine.split(",");
+
+                        for(int i=0; i<tokens.length;i++)
+                        {
+                           // System.out.println(varType + " " + tokens[i] + " " + vType);
+                            
+                            VariableDefinition vd = new VariableDefinition();
+                            
+                            
+                            tokens[i] = tokens[i].trim().replaceAll("=.*", "");
+                        
+                            vd.variableName = tokens[i];
+                            vd.variableType = varType;
+                            vd.parameterOrPrimitive = vType;
+                            
+                            try
+                            {
+                            if(vd.isParameter())
+                            {
+                                md[methodCount+1].parameterDefinitions.add(vd);
+                                //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
+                            }
+                            else 
+                            {
+                                md[methodCount+1].localVariables.add(vd);
+                                //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
+                            }
+                            }
+                            catch(Exception ex)
+                            {
+                                 if(vd.isParameter())
+                                {
+                                    md[methodCount].parameterDefinitions.add(vd);
+                                    //System.out.println("Done " + tokens[i] + " " + md[methodCount].getMethodName());
+                                }
+                                else 
+                                {
+                                    md[methodCount].localVariables.add(vd);
+                                    //System.out.println("Done " + tokens[i] +" " +  md[methodCount].getMethodName());
+                                }
+                                
+                                
+                                //System.out.println(ex.toString());
+                            }
+                        }
+
+                        
+                        
+                        //md[methodCount-1].
+                        //Varaibles inside brackets
+
+                        //Normal Singular Variables
+
+
+
+                        break;
+                    }      
+                }
+
+            }
+        catch(Exception ex)
+        {}    
+             
+            
+         
+         
+         
+         
+         
+     }
+     
 }
+
