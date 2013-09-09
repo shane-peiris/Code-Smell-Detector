@@ -40,6 +40,7 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
         btnLargeMethods = new javax.swing.JButton();
         btnLongMethods = new javax.swing.JButton();
         btnLongParameterList = new javax.swing.JButton();
+        btnLazyClassDetector = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -54,17 +55,27 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
 
         btnLongParameterList.setText("Long Parameter List");
 
+        btnLazyClassDetector.setText("Lazy Class Detector");
+        btnLazyClassDetector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLazyClassDetectorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(103, 103, 103)
-                .addComponent(btnLongMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnLargeMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnLongParameterList, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnLongMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnLargeMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnLongParameterList, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(139, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -75,7 +86,9 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
                     .addComponent(btnLongParameterList, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLargeMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLongMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(355, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(283, Short.MAX_VALUE))
         );
 
         pack();
@@ -85,6 +98,10 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
         // TODO add your handling code here:
          MF.setVisible(true);
     }//GEN-LAST:event_formWindowClosed
+
+    private void btnLazyClassDetectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLazyClassDetectorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnLazyClassDetectorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -122,6 +139,7 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLargeMethods;
+    private javax.swing.JButton btnLazyClassDetector;
     private javax.swing.JButton btnLongMethods;
     private javax.swing.JButton btnLongParameterList;
     // End of variables declaration//GEN-END:variables
