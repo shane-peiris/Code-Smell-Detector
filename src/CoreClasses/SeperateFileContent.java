@@ -22,6 +22,9 @@ public class SeperateFileContent {
     public Vector chk_method_details = new Vector<Object>();
     public Vector<Object> ClassCodeBlocks=new Vector<Object>();
     public Vector<Object> MethodCodeBlocks=new Vector<Object>();
+    public Vector<Object> variableList=new Vector<Object>();
+    public Vector<Object> tempVariableListParameter=new Vector<Object>();
+    public Vector<Object> tempVariableListPrimitive=new Vector<Object>();
 
     public String delims = "\t\n,;{}[]().-<>&^%$@!-+\\/*'~\"= ";
     public int fw_flag_c=0;
@@ -34,9 +37,10 @@ public class SeperateFileContent {
     public int countNum=1;
     public String curClassIn="";
     public int LineCount;
+    public int variableCount=0;
     
-    public static String[] dataTypes=new String[]{"int","boolean","char","double","float","byte","short","long"};
-    public static int[] dataTypesCount=new int[]{0,0,0,0,0,0,0,0};
+    public static String[] dataTypes=new String[]{"int","boolean","char","double","float","byte","short","long","String"};
+    public static int[] dataTypesCount=new int[]{0,0,0,0,0,0,0,0,0};
     
     //public int methodLineCount;
     
@@ -70,9 +74,23 @@ public class SeperateFileContent {
     
     public String getCodeBlockType(String curLine)
     {
-        
+        String accessType="";
         String methodName="";
         String retType="";
+        
+        if(curLine.contains("public"))
+         {
+             accessType = "public";
+         }
+         else if(curLine.contains("protected"))
+         {
+             accessType = "protected";
+         }
+         else if(curLine.contains("private"))
+         {
+             accessType = "private";
+         }
+        
         
           curLine = curLine.replaceAll("public ","");
           curLine = curLine.replaceAll("protected ","");
@@ -160,21 +178,7 @@ public class SeperateFileContent {
                     chk_class_details.add("I - " + " ");
                     chk_class_details.add("O - Object");
                 }          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                chk_class_details.add(accessType);
                 curClassIn = curClassIn.replace("{", "");
                 curClassIn = curClassIn.replace(" ", "");
                // System.out.println(curClassIn);
@@ -201,7 +205,8 @@ public class SeperateFileContent {
                   methodName = curLine.substring(0,curLine.indexOf("("));
                   //System.out.println(methodName);
                   chk_method_details.add(methodName);
-
+                  //chk_method_details.add("");
+                  chk_method_details.add(accessType);
                   //md[methodCount+1] = new MethodDefinition();
                  // md[methodCount+1].methodName = methodName;
                  // md[methodCount+1].returnType = "Null";
@@ -244,10 +249,11 @@ public class SeperateFileContent {
                  // System.out.println(methodName);
 
                   chk_method_details.add(methodName);
-
+                    chk_method_details.add(accessType);
                   //md[methodCount+1] = new MethodDefinition();
                   //md[methodCount+1].methodName = methodName;
                   chk_method_details.add(retType);
+                  
                   //md[methodCount+1].methodLineCount=methodLineCount;
 
                 if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
@@ -371,7 +377,6 @@ public class SeperateFileContent {
         String blockDetails="";
         LineCount=0;
        
-        
         for(int i=sPos;i<FileContentLineByLineWithoutComments.size();i++)
         {
           
@@ -380,7 +385,7 @@ public class SeperateFileContent {
           
           if((x==0)& !(mLine.endsWith("{") | mLine.endsWith("{(.*?)")))
           {
-              blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
+              blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";  
               x++;
               continue;
           }
@@ -396,6 +401,9 @@ public class SeperateFileContent {
           }
           
           blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
+          
+            
+          
           x++;
           LineCount++;
           
@@ -430,10 +438,12 @@ public class SeperateFileContent {
         md_temp = new MethodDefinition();
         
         md_temp.method_name = chk_method_details.elementAt(0).toString();
+        md_temp.accessType = chk_method_details.elementAt(1).toString();
         try
         {
-        md_temp.return_type = chk_method_details.elementAt(1).toString();
+        md_temp.return_type = chk_method_details.elementAt(2).toString();
         md_temp.methType = "Normal";
+        
         }
         catch(Exception ex)
         {
@@ -488,7 +498,14 @@ public class SeperateFileContent {
                     //System.out.println(cd_temp[cd_count].parent_class );
                 }
 
-
+                if(chk_class_details.elementAt(ele_id+1).toString().equals(""))
+                {
+                    cd_temp.accessType = "private";
+                }
+                else
+                {
+                    cd_temp.accessType = chk_class_details.elementAt(ele_id+1).toString();
+                }
                 
             }
             return cd_temp;
@@ -562,36 +579,64 @@ public class SeperateFileContent {
         {
             String blockType = getCodeBlockType(FileContentLineByLineWithoutComments.elementAt(i)).toString();
             
-            countVariables(FileContentLineByLineWithoutComments.elementAt(i).toString());
+            countVariables("1",FileContentLineByLineWithoutComments.elementAt(i).toString(),"");
+                        
+//           if(clzFlag==2 & meth==0)
+//            {
+//                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global");
+//            }
+//
+//
+//            if(clzFlag>1 & meth>1)
+//            {
+//                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+//            }
+//            else if( (FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
+//            {
+//                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+//            }
             
             switch(blockType) {
                 case "class":
                     
-                    ClassDefinition cd = new ClassDefinition();  
-                    cd = SeperateClassDetails(cd);
-                    cd.content = (getEntireCodeBlock(i-1, "class")).toString();
-                    //cd.class_name=curClassIn.toString();   
-                    cd.class_line = LineCount;
-                    ClassCodeBlocks.add(cd);
-                    chk_class_details.clear();
-                    classCount++;
-                    break;
-                    
-                    case "method":
-                    
-                    MethodDefinition md = new MethodDefinition();  
-                    md = SeperateMethodDetails(md);
-                    md.content = (getEntireCodeBlock(i-1, "method")).toString();
-                    //cd.class_name=curClassIn.toString();  
-                    
-                    md.meth_line = LineCount;
-                    ClassDefinition cdTemp = (ClassDefinition) ClassCodeBlocks.elementAt(classCount-1);
-                    cdTemp.method_names.add(md);
-                    ClassCodeBlocks.removeElementAt(classCount-1);
-                    ClassCodeBlocks.add(classCount-1, cdTemp);
-                    MethodCodeBlocks.add(md);
-                    chk_method_details.clear();
-                    break;
+                ClassDefinition cd = new ClassDefinition();  
+                cd = SeperateClassDetails(cd);
+                cd.content = (getEntireCodeBlock(i-1, "class")).toString();
+                //cd.class_name=curClassIn.toString();   
+                cd.class_line = LineCount;
+                
+                cd.global_variables.add(tempVariableListPrimitive);
+                tempVariableListPrimitive.removeAllElements();
+                tempVariableListParameter.removeAllElements();
+                
+                ClassCodeBlocks.add(cd);
+                chk_class_details.clear();
+                classCount++;
+                break;
+
+                case "method":
+
+                MethodDefinition md = new MethodDefinition();  
+                md = SeperateMethodDetails(md);
+                md.content = (getEntireCodeBlock(i-1, "method")).toString();
+                //cd.class_name=curClassIn.toString();  
+
+                md.meth_line = LineCount;
+                md.loc_variables.add(tempVariableListPrimitive);
+                md.para_Defs.add(tempVariableListParameter);
+                tempVariableListPrimitive.removeAllElements();
+                tempVariableListParameter.removeAllElements();
+                
+                ClassDefinition cdTemp = (ClassDefinition) ClassCodeBlocks.elementAt(classCount-1);
+                
+                
+                
+                cdTemp.method_names.add(md);
+                ClassCodeBlocks.removeElementAt(classCount-1);
+                ClassCodeBlocks.add(classCount-1, cdTemp);
+                MethodCodeBlocks.add(md);
+                chk_method_details.clear();
+                break;
             }
                     
             
@@ -608,19 +653,35 @@ public class SeperateFileContent {
               {
                   if(t[i].equals(dataTypes[j]))
                   {
-                      dataTypesCount[j] =  dataTypesCount[j] + 1;                    
+                      dataTypesCount[j] =  dataTypesCount[j] + 1;
+                      variableCount++;
                   }              
               }
           }    
       }
       
-     public  void countVariables(String val, String line)
+     public  void countVariables(String val, String line, String pos)
      {
+         String accessType="";
       
          String pat="(.*?),"; 
          String pat1="(.*?);";  
          Pattern p = Pattern.compile(pat);
          Pattern p1 = Pattern.compile(pat1);
+         
+         if(line.contains("public"))
+         {
+             accessType = "public";
+         }
+         else if(line.contains("protected"))
+         {
+             accessType = "protected";
+         }
+         else if(line.contains("private"))
+         {
+             accessType = "private";
+         }
+         
          
         
         String newLine=line;
@@ -651,7 +712,7 @@ public class SeperateFileContent {
                         
                         //System.out.println(m1.group(1)+ "-------------------------------- Primitive 1");
                         if(val.equals("2"))
-                            extractVarDetails(m1.group(1),"Primitive");
+                            extractVarDetails(m1.group(1),"Primitive",pos,accessType);
                         else
                         {                        
                             String[] tokens=m1.group(1).split("\\s+");   
@@ -677,7 +738,7 @@ public class SeperateFileContent {
                                 if(!(m.group(1).matches("(.*?)\\(\\s+")))
                                 {
                                     //System.out.println(m.group(1)+ "-------------------------------- Parameter 2");
-                                    extractVarDetails(m.group(1),"Parameter");
+                                    extractVarDetails(m.group(1),"Parameter",pos,accessType);
                                 }
                             }
                             catch(Exception ex)
@@ -708,7 +769,7 @@ public class SeperateFileContent {
                  //System.out.println(m1.group(1)+ "-------------------------------- Primitive 3");
                 if(val.equals("2"))
                 {
-                    extractVarDetails(m1.group(1),"Primitive");
+                    extractVarDetails(m1.group(1),"Primitive",pos,accessType);
                 }
                 else
                 {
@@ -748,7 +809,7 @@ public class SeperateFileContent {
                     if(!(m1.group(1).matches("(.*?)\\s+return\\s+(.*?)")))
                     {
                         //System.out.println(m1.group(1)+ "-------------------------------- Primitive 4");
-                        extractVarDetails(m1.group(1),"Primitive");
+                        extractVarDetails(m1.group(1),"Primitive",pos,accessType);
                     }
                 }
                 else
@@ -764,12 +825,13 @@ public class SeperateFileContent {
          
      }
     
-     public void extractVarDetails(String dataLine, String vType)
+     public void extractVarDetails(String dataLine, String vType, String pos,String aType)
      {
          String varName="";
          String varType="";
          Vector tempVars = new Vector<String>();
          
+         VariableDefinition vd = new VariableDefinition();
          
          dataLine = dataLine.trim().replaceAll("(.*?)\\(", "");
          dataLine = dataLine.trim().replaceAll("\\{", "");
@@ -789,7 +851,6 @@ public class SeperateFileContent {
 
                         varType = dataLine.substring(0,dataLine.indexOf(" "));
 
-
                         dataLine = dataLine.trim().replaceAll(varType+" ", "");
 
                         //Many Variables in One Line
@@ -800,44 +861,30 @@ public class SeperateFileContent {
                         {
                            // System.out.println(varType + " " + tokens[i] + " " + vType);
                             
-                            VariableDefinition vd = new VariableDefinition();
+                            //VariableDefinition vd = new VariableDefinition();
                             
                             
                             tokens[i] = tokens[i].trim().replaceAll("=.*", "");
                         
-                            vd.variableName = tokens[i];
-                            vd.variableType = varType;
-                            vd.parameterOrPrimitive = vType;
+                            vd.var_name = tokens[i];
+                            vd.var_type = varType;
+                            vd.var_par_or_prim = vType;
+                            vd.accessType = aType;
+                            vd.pos = pos;
                             
-                            try
-                            {
                             if(vd.isParameter())
                             {
-                                md[methodCount+1].parameterDefinitions.add(vd);
+                                tempVariableListParameter.add(vd);
+                                variableCount++;
                                 //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
                             }
                             else 
                             {
-                                md[methodCount+1].localVariables.add(vd);
+                                tempVariableListPrimitive.add(vd);
+                                variableCount++;
                                 //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
                             }
-                            }
-                            catch(Exception ex)
-                            {
-                                 if(vd.isParameter())
-                                {
-                                    md[methodCount].parameterDefinitions.add(vd);
-                                    //System.out.println("Done " + tokens[i] + " " + md[methodCount].getMethodName());
-                                }
-                                else 
-                                {
-                                    md[methodCount].localVariables.add(vd);
-                                    //System.out.println("Done " + tokens[i] +" " +  md[methodCount].getMethodName());
-                                }
-                                
-                                
-                                //System.out.println(ex.toString());
-                            }
+                            
                         }
 
                         

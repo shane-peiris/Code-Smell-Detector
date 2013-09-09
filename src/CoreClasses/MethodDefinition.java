@@ -19,6 +19,7 @@ public class MethodDefinition {
     public int meth_line=0;
     public int max_meth_nest_depth=0;
     public String methType="";
+    public String accessType="";
     
     public String getMethodName()
     {    
@@ -33,6 +34,11 @@ public class MethodDefinition {
     public String getReturnType()
     {
         return return_type;
+    }
+    
+    public String getAccessType()
+    {
+        return accessType;
     }
     
     public Vector getParameterDefinitions()

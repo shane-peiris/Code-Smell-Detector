@@ -18,7 +18,7 @@ dsg*/
 
 public String parent_class="";
 System.out.println(cur_line);
-	parent_class="";
+	
     }
     public String getParentClassName(String shane, int shevon)
     {    

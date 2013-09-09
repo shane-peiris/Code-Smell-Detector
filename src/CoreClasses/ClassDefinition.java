@@ -13,11 +13,13 @@ import java.util.Vector;
 public class ClassDefinition {
     public Vector interf_names = new Vector<Object>(); 
     public Vector method_names = new Vector<Object>(); 
+    public Vector global_variables = new Vector<Object>();
     public String parent_class="";
     public String class_name="";
     public String content="";
     public int class_line=0;
     public int max_class_nest_depth = 0;
+    public String accessType="";
     
     public String getParentClassName()
     {    
@@ -32,6 +34,11 @@ public class ClassDefinition {
     {    
         return content;
     }
+    public String getAccessType()
+    {
+        return accessType;
+    }
+    
     public Vector getMethodDefinitions()
     {
         return method_names;
@@ -45,5 +52,9 @@ public class ClassDefinition {
     public int getMaximumNesting()
     {
         return max_class_nest_depth;
+    }
+    public Vector getGlobalVariables()
+    {    
+        return global_variables;        
     }
 }

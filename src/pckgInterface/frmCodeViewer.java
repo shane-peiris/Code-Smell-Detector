@@ -48,9 +48,6 @@ public class frmCodeViewer extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
             }
@@ -290,11 +287,6 @@ public class frmCodeViewer extends javax.swing.JFrame {
         MF.setVisible(true);
         
     }//GEN-LAST:event_formWindowClosed
-
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

@@ -12,6 +12,8 @@ public class VariableDefinition {
     public String var_name="";
     public String var_type="";
     public String var_par_or_prim;
+    public String pos="";
+    public String accessType="";
     
     public String getVariableName()
     {
@@ -21,6 +23,10 @@ public class VariableDefinition {
     public String getVariableType()
     {
         return var_type;
+    }
+    public String getAccessType()
+    {
+        return accessType;
     }
     
     public boolean isParameter()
@@ -40,4 +46,10 @@ public class VariableDefinition {
         }
         return false;
     }   
+    
+    public String getVariablePos()
+    {
+        return pos;
+    }
+    
 }
