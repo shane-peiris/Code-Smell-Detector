@@ -38,6 +38,8 @@ public class SeperateFileContent {
     public String curClassIn="";
     public int LineCount;
     public int variableCount=0;
+    public int FilevariableCount=0;
+    public int MethvariableCount=0;
     
     public static String[] dataTypes=new String[]{"int","boolean","char","double","float","byte","short","long","String"};
     public static int[] dataTypesCount=new int[]{0,0,0,0,0,0,0,0,0};
@@ -329,26 +331,13 @@ public class SeperateFileContent {
                 //System.out.println("meth lines"+methodLineCount);
             }
             if(clzFlag>=1 & !curLine.equals(""))
-                {
-                  /// classLineCount++;
-                  // System.out.println("line:"+mLine);
-                  // System.out.println("/nTotla Number of lines:"+classLineCount);
-
-                }
-            if(clzFlag==2 & meth==0)
             {
-                countVariables("2",curLine.toString(),"global");
-            }
+              /// classLineCount++;
+              // System.out.println("line:"+mLine);
+              // System.out.println("/nTotla Number of lines:"+classLineCount);
 
-
-            if(clzFlag>1 & meth>1)
-            {
-                countVariables("2",curLine.toString(),"local");
             }
-            else if( (curLine.toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
-            {
-                countVariables("2",curLine.toString(),"local");
-            }
+            
           }
           catch(Exception ex)
           {}
@@ -390,6 +379,10 @@ public class SeperateFileContent {
         String mLine="";
         String blockDetails="";
         LineCount=0;
+        
+        variableList.clear();
+        tempVariableListPrimitive.removeAllElements();
+        tempVariableListParameter.removeAllElements();
        
         for(int i=sPos;i<FileContentLineByLineWithoutComments.size();i++)
         {
@@ -399,9 +392,26 @@ public class SeperateFileContent {
           
           if((x==0)& !(mLine.endsWith("{") | mLine.endsWith("{(.*?)")))
           {
-              blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";  
-              x++;
-              continue;
+                blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";  
+                if(clzFlag==2 & meth==0 & level==1)
+                {
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global");
+                }
+                else if(clzFlag==2 & meth==0 & level>1)
+                {
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+                }
+              
+                if(clzFlag>1 & meth>1)
+                {
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+                }
+                else if((FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0)
+                {
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+                }
+                x++;
+                continue;
           }
             
             
@@ -416,7 +426,24 @@ public class SeperateFileContent {
           
           blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
           
-            
+            if(clzFlag==2 & meth==0 & level==1)
+            {
+                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global");
+            }
+            else if(clzFlag==2 & meth==0 & level>1)
+            {
+                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+            }
+
+
+            if(clzFlag>1 & meth>1)
+            {
+                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+            }
+            else if( (FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
+            {
+                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+            }
           
           x++;
           LineCount++;
@@ -593,7 +620,7 @@ public class SeperateFileContent {
         {
             String blockType = getCodeBlockType(FileContentLineByLineWithoutComments.elementAt(i)).toString();
             
-            countVariables("1",FileContentLineByLineWithoutComments.elementAt(i).toString(),"");
+            //countVariables("1",FileContentLineByLineWithoutComments.elementAt(i).toString(),"");
                         
 
             
@@ -606,28 +633,24 @@ public class SeperateFileContent {
                 //cd.class_name=curClassIn.toString();   
                 cd.class_line = LineCount;
                 
-                cd.global_variables.add(tempVariableListPrimitive);
-                try
+                //cd.ClassvariableList = variableList;
+                
+                for(int v=0;v<variableList.size();v++)
                 {
-                ClassDefinition cdTemp = (ClassDefinition) ClassCodeBlocks.elementAt(classCount-1);
-                
-                
-                
-                cdTemp.global_variables.add(tempVariableListPrimitive);
-                ClassCodeBlocks.removeElementAt(classCount-1);
-                ClassCodeBlocks.add(classCount-1, cdTemp);
+                    cd.ClassvariableList.add(variableList.elementAt(v));
                 }
                 
-                catch(Exception ex)
-                {}
                 
-                
-                tempVariableListPrimitive.removeAllElements();
-                tempVariableListParameter.removeAllElements();
-                
+                cd.variableCount = variableCount;
                 ClassCodeBlocks.add(cd);
+                
+                
+                
                 chk_class_details.clear();
                 classCount++;
+                FilevariableCount = FilevariableCount + variableCount;
+                variableCount = 0;
+                
                 break;
 
                 case "method":
@@ -638,10 +661,27 @@ public class SeperateFileContent {
                 //cd.class_name=curClassIn.toString();  
 
                 md.meth_line = LineCount;
-                md.loc_variables.add(tempVariableListPrimitive);
-                md.para_Defs.add(tempVariableListParameter);
-                tempVariableListPrimitive.removeAllElements();
-                tempVariableListParameter.removeAllElements();
+                
+                for(int v=0;v<tempVariableListPrimitive.size();v++)
+                {
+                    md.loc_variables.add(tempVariableListPrimitive.elementAt(v));
+                }
+                
+                for(int v=0;v<tempVariableListParameter.size();v++)
+                {
+                    md.para_Defs.add(tempVariableListParameter.elementAt(v));
+                }
+                
+                
+                //md.loc_variables.add(tempVariableListPrimitive);
+                //md.para_Defs.add(tempVariableListParameter);
+                MethvariableCount = variableCount;
+                
+                md.variableCount = MethvariableCount;
+                
+                //variableList.removeAllElements();
+                //tempVariableListPrimitive.removeAllElements();
+                //tempVariableListParameter.removeAllElements();
                 
                 ClassDefinition cdTemp = (ClassDefinition) ClassCodeBlocks.elementAt(classCount-1);
                 
@@ -652,6 +692,9 @@ public class SeperateFileContent {
                 ClassCodeBlocks.add(classCount-1, cdTemp);
                 MethodCodeBlocks.add(md);
                 chk_method_details.clear();
+                //FilevariableCount = FilevariableCount + variableCount;
+                
+                variableCount = 0;
                 break;
             }
                     
@@ -847,7 +890,7 @@ public class SeperateFileContent {
          String varType="";
          Vector tempVars = new Vector<String>();
          
-         VariableDefinition vd = new VariableDefinition();
+         
          
          dataLine = dataLine.trim().replaceAll("(.*?)\\(", "");
          dataLine = dataLine.trim().replaceAll("\\{", "");
@@ -859,7 +902,8 @@ public class SeperateFileContent {
         { 
             for(int j=0;j<dataTypes.length;j++)
             {
-
+                    try
+                    {
                     if(dataLine.substring(0,dataLine.indexOf(" ")).equals(dataTypes[j]))
                     {
 
@@ -881,7 +925,7 @@ public class SeperateFileContent {
                             
                             
                             tokens[i] = tokens[i].trim().replaceAll("=.*", "");
-                        
+                            VariableDefinition vd = new VariableDefinition();
                             vd.var_name = tokens[i];
                             vd.var_type = varType;
                             vd.var_par_or_prim = vType;
@@ -892,11 +936,14 @@ public class SeperateFileContent {
                             {
                                 tempVariableListParameter.add(vd);
                                 variableCount++;
+                                variableList.add(vd);
+                                //variableCount++;
                                 //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
                             }
                             else 
                             {
                                 tempVariableListPrimitive.add(vd);
+                                variableList.add(vd);
                                 variableCount++;
                                 //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
                             }
@@ -913,7 +960,10 @@ public class SeperateFileContent {
 
 
                         break;
-                    }      
+                    }   
+                    }
+                    catch(Exception ex)
+                    {}
                 }
 
             }

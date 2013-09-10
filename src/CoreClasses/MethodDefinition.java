@@ -17,6 +17,7 @@ public class MethodDefinition {
     public String return_type=""; 
     public String content="";
     public int meth_line=0;
+    public int variableCount=0;
     public int max_meth_nest_depth=0;
     public String methType="";
     public String accessType="";
