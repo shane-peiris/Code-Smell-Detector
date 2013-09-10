@@ -21,6 +21,7 @@ public class MethodDefinition {
     public int max_meth_nest_depth=0;
     public String methType="";
     public String accessType="";
+    public int startLineNo=0;
     
     public String getMethodName()
     {    
@@ -62,5 +63,9 @@ public class MethodDefinition {
     public int getMaximumNesting()
     {
         return max_meth_nest_depth;
+    }
+    public int getStartLineNo()
+    {
+        return startLineNo;
     }
 }

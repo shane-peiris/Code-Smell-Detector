@@ -14,6 +14,7 @@ public class VariableDefinition {
     public String var_par_or_prim;
     public String pos="";
     public String accessType="";
+    public int startLineNo=0;
     
     public String getVariableName()
     {
@@ -50,6 +51,11 @@ public class VariableDefinition {
     public String getVariablePos()
     {
         return pos;
+    }
+    
+    public int getStartLineNo()
+    {
+        return startLineNo;
     }
     
 }

@@ -27,10 +27,11 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="103" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="102" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="btnBloatedCodes" min="-2" pref="138" max="-2" attributes="0"/>
                   <Component id="btnLazyClassDetector" min="-2" pref="138" max="-2" attributes="0"/>
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="btnLongMethods" min="-2" pref="138" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnLargeMethods" min="-2" pref="138" max="-2" attributes="0"/>
@@ -38,14 +39,16 @@
                       <Component id="btnLongParameterList" min="-2" pref="138" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="139" max="32767" attributes="0"/>
+              <EmptySpace pref="140" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace pref="69" max="32767" attributes="0"/>
+              <Component id="btnBloatedCodes" min="-2" pref="66" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="btnLongParameterList" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
                   <Component id="btnLargeMethods" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
@@ -53,7 +56,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btnLazyClassDetector" min="-2" pref="66" max="-2" attributes="0"/>
-              <EmptySpace pref="283" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="168" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -80,6 +83,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLazyClassDetectorActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnBloatedCodes">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Bloated Codes"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBloatedCodesActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

@@ -393,22 +393,23 @@ public class SeperateFileContent {
           if((x==0)& !(mLine.endsWith("{") | mLine.endsWith("{(.*?)")))
           {
                 blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";  
+                
                 if(clzFlag==2 & meth==0 & level==1)
                 {
-                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global");
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global",i);
                 }
                 else if(clzFlag==2 & meth==0 & level>1)
                 {
-                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
                 }
               
                 if(clzFlag>1 & meth>1)
                 {
-                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
                 }
                 else if((FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0)
                 {
-                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
                 }
                 x++;
                 continue;
@@ -426,23 +427,27 @@ public class SeperateFileContent {
           
           blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
           
-            if(clzFlag==2 & meth==0 & level==1)
+          if(clzFlag==2 & meth==0 & level==1 & mLine.matches("(.*?)\\((.*?)\\)(.*?)"))
             {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global");
+                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
+            }
+          else if(clzFlag==2 & meth==0 & level==1)
+            {
+                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global",i);
             }
             else if(clzFlag==2 & meth==0 & level>1)
             {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
             }
 
 
             if(clzFlag>1 & meth>1)
             {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
             }
             else if( (FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
             {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local");
+                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
             }
           
           x++;
@@ -632,7 +637,7 @@ public class SeperateFileContent {
                 cd.content = (getEntireCodeBlock(i-1, "class")).toString();
                 //cd.class_name=curClassIn.toString();   
                 cd.class_line = LineCount;
-                
+                cd.startLineNo = i;
                 //cd.ClassvariableList = variableList;
                 
                 for(int v=0;v<variableList.size();v++)
@@ -659,7 +664,7 @@ public class SeperateFileContent {
                 md = SeperateMethodDetails(md);
                 md.content = (getEntireCodeBlock(i-1, "method")).toString();
                 //cd.class_name=curClassIn.toString();  
-
+                md.startLineNo = i;
                 md.meth_line = LineCount;
                 
                 for(int v=0;v<tempVariableListPrimitive.size();v++)
@@ -719,7 +724,7 @@ public class SeperateFileContent {
           }    
       }
       
-     public  void countVariables(String val, String line, String pos)
+     public  void countVariables(String val, String line, String pos,int lineNo)
      {
          String accessType="";
       
@@ -771,7 +776,7 @@ public class SeperateFileContent {
                         
                         //System.out.println(m1.group(1)+ "-------------------------------- Primitive 1");
                         if(val.equals("2"))
-                            extractVarDetails(m1.group(1),"Primitive",pos,accessType);
+                            extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo);
                         else
                         {                        
                             String[] tokens=m1.group(1).split("\\s+");   
@@ -797,7 +802,7 @@ public class SeperateFileContent {
                                 if(!(m.group(1).matches("(.*?)\\(\\s+")))
                                 {
                                     //System.out.println(m.group(1)+ "-------------------------------- Parameter 2");
-                                    extractVarDetails(m.group(1),"Parameter",pos,accessType);
+                                    extractVarDetails(m.group(1),"Parameter",pos,accessType,lineNo);
                                 }
                             }
                             catch(Exception ex)
@@ -828,7 +833,7 @@ public class SeperateFileContent {
                  //System.out.println(m1.group(1)+ "-------------------------------- Primitive 3");
                 if(val.equals("2"))
                 {
-                    extractVarDetails(m1.group(1),"Primitive",pos,accessType);
+                    extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo);
                 }
                 else
                 {
@@ -868,7 +873,7 @@ public class SeperateFileContent {
                     if(!(m1.group(1).matches("(.*?)\\s+return\\s+(.*?)")))
                     {
                         //System.out.println(m1.group(1)+ "-------------------------------- Primitive 4");
-                        extractVarDetails(m1.group(1),"Primitive",pos,accessType);
+                        extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo);
                     }
                 }
                 else
@@ -884,7 +889,7 @@ public class SeperateFileContent {
          
      }
     
-     public void extractVarDetails(String dataLine, String vType, String pos,String aType)
+     public void extractVarDetails(String dataLine, String vType, String pos,String aType,int LineNo)
      {
          String varName="";
          String varType="";
@@ -931,6 +936,7 @@ public class SeperateFileContent {
                             vd.var_par_or_prim = vType;
                             vd.accessType = aType;
                             vd.pos = pos;
+                            vd.startLineNo = LineNo;
                             
                             if(vd.isParameter())
                             {

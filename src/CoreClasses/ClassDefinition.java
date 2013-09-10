@@ -21,6 +21,7 @@ public class ClassDefinition {
     public int max_class_nest_depth = 0;
     public String accessType="";
     public int variableCount=0;
+    public int startLineNo=0;
     
     public String getParentClassName()
     {    
@@ -57,5 +58,9 @@ public class ClassDefinition {
     public Vector getVariableList()
     {    
         return ClassvariableList;        
+    }
+    public int getStartLineNo()
+    {
+        return startLineNo;
     }
 }

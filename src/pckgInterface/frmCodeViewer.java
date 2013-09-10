@@ -205,6 +205,13 @@ public class frmCodeViewer extends javax.swing.JFrame {
                     if(SFC.getClassDetails(i).class_name.toString().equals(classN))
                     {
                         txtCodeBlockPreview.setText(SFC.getClassDetails(i).content.toString());
+                        
+                        String[] tokens=SFC.getClassDetails(i).content.toString().split("\n"); 
+                        
+                        for (int ln=0;ln<tokens.length;ln++)
+                        {   
+                            
+                        }
                     }
                 }
                 break;
