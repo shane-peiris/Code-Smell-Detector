@@ -4,29 +4,35 @@
  */
 package pckgInterface;
 
+import CoreClasses.MethodDefinition;
+import CoreClasses.ClassDefinition;
 import CoreClasses.SeperateFileContent;
+import java.util.Vector;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Shane
  */
 
-SeperateFileContent SFC = new SeperateFileContent();
-    MainForm MF = new MainForm();
+
 
 public class frmDetectBloatedCodes extends javax.swing.JFrame {
 
     /**
      * Creates new form frmDetectBloatedCodes
      */
+    SeperateFileContent SFC = new SeperateFileContent();
+    frmCodeSmellMenu CSM = new frmCodeSmellMenu();
     public frmDetectBloatedCodes() {
         initComponents();
     }
     
-    public frmDetectBloatedCodes(SeperateFileContent SFCTemp, MainForm MFTemp) {
+    public frmDetectBloatedCodes(SeperateFileContent SFCTemp, frmCodeSmellMenu CSMemp) {
         
         SFC = SFCTemp;
-        MF = MFTemp;
+        CSM = CSMemp;
         initComponents();
     }
 
@@ -40,7 +46,7 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblShowLongMethodData = new javax.swing.JTable();
         jComboBox1 = new javax.swing.JComboBox();
         btnProcess = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -48,31 +54,30 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Method Name", "Contained Class", "Method Line Count", "Method Starting Line"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+
+        tblShowLongMethodData.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane1.setViewportView(tblShowLongMethodData);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Long Method", "Large Class", "Long Parameter List" }));
 
         btnProcess.setText("Process");
+        btnProcess.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcessActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Smell to Detect");
 
@@ -118,6 +123,96 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        // TODO add your handling code here:
+        
+        CSM.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
+
+    private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
+        // TODO add your handling code here:
+        
+        getLongMethods();
+       
+    }//GEN-LAST:event_btnProcessActionPerformed
+    
+//    public DefaultTableModel DisplayTableData(Vector columnNames)
+//    {
+//        Vector dataVec = new Vector();
+//        model = new DefaultTableModel(dataVec, columnNames); 
+//    
+//        return model;
+//    }
+    
+    
+    public void getLongMethods()
+    {
+        int MAX_LONG_METHOD_LINE_COUNT=20;
+        
+        
+        Vector columnNames = new Vector();        
+        columnNames.add("Method Name");
+        columnNames.add("Class Contain In");
+        columnNames.add("Line Count");
+        columnNames.add("Start Line No");        
+        Vector dataVec = new Vector();
+        DefaultTableModel model = new DefaultTableModel(dataVec, columnNames);  
+        
+        String MethName="";
+        String ClassContain="";
+        int LineCount=0;
+        int StartLineNo=0;
+        
+        for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+        {
+            if(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).meth_line>MAX_LONG_METHOD_LINE_COUNT)
+            {
+                MethName = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).method_name;
+                LineCount = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).meth_line;
+                StartLineNo = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).startLineNo;
+                
+                for(int c=0;c<SFC.ClassCodeBlocks.size();c++)
+                {
+                    for(int x=0;x<((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).method_names.size();x++)
+                    {
+                        //(ClassDefinition)SFC.ClassCodeBlocks.elementAt(c))
+                        //((((MethodDefinition)((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).method_names.elementAt(x)).getStartLineNo()).)
+                        if((((MethodDefinition)((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).method_names.elementAt(x)).getMethodName().equals(MethName))&(((MethodDefinition)((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).method_names.elementAt(x)).getStartLineNo()==StartLineNo))
+                        {
+                            ClassContain = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).class_name.toString();
+                            model.addRow(new Object[] {MethName.toString(),ClassContain.toString(),String.valueOf(LineCount),String.valueOf(StartLineNo)});
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        //model.addRow(new Object[] {"item1","item1info","item1moreinfo","item1closing"});
+        tblShowLongMethodData.setModel(model);
+    }
+    
+    public void getLargeClasses()
+    {
+        
+    
+    }
+    
+    public void getLongParameterLists()
+    {
+        
+    
+    }
     /**
      * @param args the command line arguments
      */
@@ -158,7 +253,7 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTable tblShowLongMethodData;
     // End of variables declaration//GEN-END:variables
 }

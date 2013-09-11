@@ -41,8 +41,8 @@ public class SeperateFileContent {
     public int FilevariableCount=0;
     public int MethvariableCount=0;
     
-    public static String[] dataTypes=new String[]{"int","boolean","char","double","float","byte","short","long","String"};
-    public static int[] dataTypesCount=new int[]{0,0,0,0,0,0,0,0,0};
+    public static String[] dataTypes=new String[]{"int","boolean","char","double","float","byte","short","long","String","Vector"};
+    public static int[] dataTypesCount=new int[]{0,0,0,0,0,0,0,0,0,0};
     
     //public int methodLineCount;
     
@@ -219,7 +219,31 @@ public class SeperateFileContent {
                     level++;
                     meth++;
                     //methodCount++;
-
+                    
+                    if((curLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }    
 
                     return "method";
                     //System.out.println("***Inside Method***");
@@ -264,6 +288,33 @@ public class SeperateFileContent {
                     meth++;
                    // methodCount++;
                     //cd[classCount-1].methDefs.add(methodName);
+                    
+                    if((curLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }
+                    
+                    
                     return "method";
                    // System.out.println("***Inside Method:***");
                 }   
@@ -295,12 +346,12 @@ public class SeperateFileContent {
                 return "class";
                // System.out.println("------Inside class:------");              
             }
-            else if((curLine.contains("{")))
+            else if((curLine.startsWith("{")) | curLine.startsWith("\\s+{"))
             {
                 level++;
                 meth++;
             }
-            else if((curLine.contains("}")))
+            else if((curLine.endsWith("}")))
             {
                 level--;
                 meth--;
@@ -754,6 +805,20 @@ public class SeperateFileContent {
           newLine = newLine.replaceAll("private ","");
           newLine = newLine.replaceAll("static ","");
           
+          try
+          {
+            if(newLine.matches("(.*?)=(.*?)\\((.*?)\\)(.*?)"))  
+               newLine = newLine.substring(0,newLine.indexOf("="));
+            if(newLine.matches("(.*?)<(.*?)>(.*?)"))
+            {
+                newLine = newLine.substring(0,newLine.indexOf("<")) + newLine.substring((newLine.indexOf(">"))+1);
+                newLine = newLine + ";";
+            }
+          }
+          catch(Exception ex)
+          {
+          }
+          
           Matcher m = p.matcher(newLine);
          Matcher m1 = p1.matcher(newLine);
          // System.out.println(mLine);
@@ -772,8 +837,6 @@ public class SeperateFileContent {
 //                    System.out.println(newLine);  
                     while(m1.find())
                     {
-                        
-                        
                         //System.out.println(m1.group(1)+ "-------------------------------- Primitive 1");
                         if(val.equals("2"))
                             extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo);

@@ -117,7 +117,7 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
     private void btnBloatedCodesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBloatedCodesActionPerformed
         // TODO add your handling code here:
         
-         frmDetectBloatedCodes CSM = new frmDetectBloatedCodes(SFC,this);
+        frmDetectBloatedCodes CSM = new frmDetectBloatedCodes(SFC,this);
         CSM.setVisible(true);
         this.setVisible(false);
         
