@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import sun.java2d.loops.ProcessPath;
 
 /**
  *
@@ -41,6 +42,10 @@ public class SeperateFileContent {
     public int FilevariableCount=0;
     public int MethvariableCount=0;
     
+    public int flag_1=0;
+    public int flag_2=0;
+    public int flag_3=0;
+    
     public static String[] dataTypes=new String[]{"int","boolean","char","double","float","byte","short","long","String","Vector"};
     public static int[] dataTypesCount=new int[]{0,0,0,0,0,0,0,0,0,0};
     
@@ -73,6 +78,62 @@ public class SeperateFileContent {
         return (MethodDefinition)MethodCodeBlocks.elementAt(i);
     }
     
+    public int check_literal_strings(String word)
+    {
+        //int ret=0;
+        
+        if((flag_1==0) & (flag_2==0))
+            {
+                if ((word.charAt(0) == '\''))
+                {
+                    flag_1=1;
+                }
+                else if((word.charAt(0) == '\"'))
+                {
+                    flag_2=1;
+                }
+            }
+            else if(flag_1 == 1)
+            {
+                if (!(word.charAt(0) == '\''))
+                {                   
+                    return 0;
+                }
+                else
+                {
+                    flag_1 = 0;
+                    return 1;
+                }
+            }
+            else if(flag_2 == 1)
+            {
+                if (!(word.charAt(0) == '\"'))
+                {
+                    if ((word.charAt(0) == '\\'))
+                    {
+                        flag_3=1;
+                    }
+                    else
+                    {
+                        flag_3=0;
+                    }
+                    return 0;
+                }
+                else
+                {
+                    if ((word.charAt(0) == '\"') & (flag_3==1))
+                    {
+                        flag_3=0;
+                        
+                        return 0;
+                    }                    
+                    flag_2 = 0;
+                    return 1;
+                }
+            }
+        
+        return 2;
+    }
     
     public String getCodeBlockType(String curLine)
     {
@@ -107,6 +168,35 @@ public class SeperateFileContent {
 //            if(((curLine.matches("(public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient)(.*?)"))|curLine.matches("class (.*?)")) & !(curLine.matches("(switch|for|if|while|repeat|until)(.*?)")))
 //            {
             
+            
+            
+            StringTokenizer splitter = new StringTokenizer(curLine, delims, true);
+        
+            //Variable to hold the total alphanumeric token count in the line read    
+            String word="";
+
+            int flag_lit = 0;
+            while(splitter.hasMoreTokens())
+            {
+                word = splitter.nextToken();
+
+                int ret2 = check_literal_strings(word);
+
+                if (ret2 == 0)
+                {
+
+                }
+                else if (ret2 ==1)
+                {
+
+                    flag_lit=1;
+                }
+
+            }
+            
+            
+            if(flag_lit==0)
+            {
             try
             {
             //Finds Class Type 1
@@ -496,6 +586,8 @@ public class SeperateFileContent {
           }
           catch(Exception ex)
           {}
+            }
+          
 //            }
             //Identify Method
             
@@ -545,6 +637,47 @@ public class SeperateFileContent {
             mLine= FileContentLineByLineWithoutComments.elementAt(i);
             mLine = mLine.trim().replaceAll("\\s+", " ");
           
+          StringTokenizer splitter = new StringTokenizer(mLine, delims, true);
+        
+            //Variable to hold the total alphanumeric token count in the line read    
+            String word="";
+
+            int flag_lit = 0;
+            while(splitter.hasMoreTokens())
+            {
+                word = splitter.nextToken();
+
+                int ret2 = check_literal_strings(word);
+
+                if (ret2 == 0)
+                {
+
+                }
+                else if (ret2 ==1)
+                {
+
+                    flag_lit=1;
+                }
+
+            }
+            
+            String s = mLine;
+            
+            String regex = "\"(\\([^)]*\\)|[^\"])*\"";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(s);
+            while(m.find()) {
+                mLine = mLine.trim().replace(s.substring(m.start(),m.end()), "\"\"");
+                System.out.println(s.substring(m.start(),m.end()));
+                System.out.println(mLine);
+            }
+            
+            
+            mLine = mLine.replaceAll("\"(\\([^)]*\\)|[^\"])*\"", "\"\"");
+            //if(flag_lit==0 | mLine.matches("[;\\s]+if[\\s*|\\(]"))
+            //{  
+            
+            
           if((x==0))
           {
               //& !(mLine.startsWith("{")
@@ -574,10 +707,10 @@ public class SeperateFileContent {
                 {}
                 x++;
                 
-                if(((mLine.startsWith("{")) | (mLine.matches("(.*?)\\{(.*?)\\}"))|(mLine.matches("(.*?)\\{(.*?)")))& !(mLine.contains("(if)")))
+                if(((mLine.startsWith("{")) | (mLine.matches("(.*?)\\{(.*?)\\}"))|(mLine.matches("(.*?)\\{(.*?)"))))
                 {
                     level++;
-                    if((mLine.endsWith("}"))& !(mLine.contains("(if)")))
+                    if((mLine.endsWith("}")))
                     {
                     level--;     
                     }
@@ -590,17 +723,22 @@ public class SeperateFileContent {
 //          if ((!(mLine.matches("(.*?)\\(\"(.*?)\"\\)(.*?)"))& (mLine.contains("\\{"))|mLine.contains("\\}")))  
 //          {
                   
-            if(((mLine.startsWith("{")) | (mLine.matches("(.*?)\\{(.*?)\\}"))|(mLine.matches("(.*?)\\{(.*?)")))& !(mLine.contains("(if)")))
+            if((mLine.startsWith("{")) | mLine.startsWith("\\s+{")|mLine.endsWith("{"))
             {
                 level++;
-                if((mLine.endsWith("}"))& !(mLine.contains("(if)")))
-                {
-                level--;     
-                }
+                
+                
+                if((mLine.endsWith("}")))
+                    {
+                        level--;
+                        
+                    }
+                
             }
-            else if((mLine.endsWith("}"))& !(mLine.contains("(if)")))
+            else if((mLine.endsWith("}")))
             {
-                level--;     
+                level--;
+                          
             }
 //          }
           blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
@@ -641,6 +779,13 @@ public class SeperateFileContent {
               break;
           }
           
+//            }
+//            else
+//            {
+//                blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n"; 
+//                x++;
+//            
+//            }
           
         }
         
@@ -965,7 +1110,8 @@ public class SeperateFileContent {
          // System.out.println(mLine);
           
           //mLine = mLine.trim().replace("\\s+", "");
-         
+         try
+         {
          if(newLine.matches("(.*?)\\((.*?)\\)(.*?)"))
          {
                 
@@ -1088,7 +1234,9 @@ public class SeperateFileContent {
 
             }
          }
-              
+         }
+         catch(Exception ex)
+         {}
            countNum=1;   
          
      }
