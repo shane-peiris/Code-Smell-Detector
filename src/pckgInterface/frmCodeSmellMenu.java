@@ -112,6 +112,9 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
 
     private void btnLazyClassDetectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLazyClassDetectorActionPerformed
         // TODO add your handling code here:
+        frmLazyClass LC = new frmLazyClass(SFC,this);
+        LC.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btnLazyClassDetectorActionPerformed
 
     private void btnBloatedCodesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBloatedCodesActionPerformed
