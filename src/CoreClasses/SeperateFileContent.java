@@ -23,6 +23,7 @@ public class SeperateFileContent {
     public Vector chk_method_details = new Vector<Object>();
     public Vector<Object> ClassCodeBlocks=new Vector<Object>();
     public Vector<Object> MethodCodeBlocks=new Vector<Object>();
+    //public Vector<Object> AllvariableList=new Vector<Object>();
     public Vector<Object> variableList=new Vector<Object>();
     public Vector<Object> tempVariableListParameter=new Vector<Object>();
     public Vector<Object> tempVariableListPrimitive=new Vector<Object>();
@@ -161,7 +162,7 @@ public class SeperateFileContent {
 //          curLine = curLine.replaceAll("static ","");
 //          curLine = curLine.trim().replace("\\s+","");
             curLine = curLine.trim().replace("\\s+","");
-            curLine = curLine.trim().replace("\\s+","");
+            curLine = curLine.replaceAll("\\s+"," ");
             //Identify Class
             //Then get entire relevant code block
             
@@ -201,9 +202,8 @@ public class SeperateFileContent {
             {
             //Finds Class Type 1
             //if(curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?\\s*\\{")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?(.*?)"))
-             if(curLine.matches("(.*?) class (.*?)")|curLine.matches("class (.*?)"))
+            if(curLine.matches("(.*?) class (.*?)")|curLine.matches("class (.*?)"))
             {
-
                 curLine = curLine.replaceAll("public ","");
                 curLine = curLine.replaceAll("protected ","");
                 curLine = curLine.replaceAll("private ","");
@@ -1310,6 +1310,7 @@ public class SeperateFileContent {
                                 tempVariableListParameter.add(vd);
                                 variableCount++;
                                 variableList.add(vd);
+                                //AllvariableList.add(vd);
                                 //variableCount++;
                                 //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
                             }
@@ -1317,6 +1318,7 @@ public class SeperateFileContent {
                             {
                                 tempVariableListPrimitive.add(vd);
                                 variableList.add(vd);
+                                //AllvariableList.add(vd);
                                 variableCount++;
                                 //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
                             }
