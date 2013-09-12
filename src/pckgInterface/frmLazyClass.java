@@ -4,19 +4,30 @@
  */
 package pckgInterface;
 
+import CoreClasses.SeperateFileContent;
+
 /**
  *
  * @author Mali
  */
+
+
 public class frmLazyClass extends javax.swing.JFrame {
 
     /**
      * Creates new form frmLazyClass
      */
+    SeperateFileContent SFC = new SeperateFileContent();
+    frmCodeSmellMenu CSM = new frmCodeSmellMenu();
     public frmLazyClass() {
         initComponents();
     }
-
+    public frmLazyClass(SeperateFileContent SFCTemp, frmCodeSmellMenu CSMemp) {
+        
+        SFC = SFCTemp;
+        CSM = CSMemp;
+        initComponents();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
