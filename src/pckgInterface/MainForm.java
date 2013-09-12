@@ -293,7 +293,13 @@ public class MainForm extends javax.swing.JFrame {
                 txtTotalLineCountWithComments.setText(String.valueOf(SFC.FileContentLineByLine.size()));
                 txtTotalLineCountWithoutComments.setText(String.valueOf(SFC.FileContentLineByLineWithoutComments.size()));
                 
-                txtVariableCount.setText(String.valueOf(SFC.FilevariableCount));
+                int vCount = 0; //variable Count
+                for (int c=0;c<SFC.ClassCodeBlocks.size();c++)
+                {
+                    vCount = vCount + ((ClassDefinition)(SFC.ClassCodeBlocks.elementAt(c))).variableCount;
+                }
+                
+                txtVariableCount.setText(String.valueOf(vCount));
                 
                 System.out.println(SFC.MethodCodeBlocks);
                 System.out.println(SFC.ClassCodeBlocks);
