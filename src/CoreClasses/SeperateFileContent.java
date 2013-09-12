@@ -201,7 +201,7 @@ public class SeperateFileContent {
             {
             //Finds Class Type 1
             //if(curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?\\s*\\{")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?(.*?)"))
-             if(curLine.matches("(.*?) class (.*?)"))
+             if(curLine.matches("(.*?) class (.*?)")|curLine.matches("class (.*?)"))
             {
 
                 curLine = curLine.replaceAll("public ","");
