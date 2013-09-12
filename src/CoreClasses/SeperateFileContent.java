@@ -200,7 +200,8 @@ public class SeperateFileContent {
             try
             {
             //Finds Class Type 1
-            if(curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?\\s*\\{"))
+            //if(curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?\\s*\\{")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?(.*?)"))
+             if(curLine.matches("(.*?) class (.*?)"))
             {
 
                 curLine = curLine.replaceAll("public ","");
@@ -971,7 +972,14 @@ public class SeperateFileContent {
                     
                 ClassDefinition cd = new ClassDefinition();  
                 cd = SeperateClassDetails(cd);
+                try
+                {
                 cd.content = (getEntireCodeBlock(i-1, "class")).toString();
+                }
+                catch(Exception ex)
+                {
+                cd.content = (getEntireCodeBlock(i, "class")).toString();
+                }
                 //cd.class_name=curClassIn.toString();   
                 cd.class_line = LineCount;
                 cd.startLineNo = i;
