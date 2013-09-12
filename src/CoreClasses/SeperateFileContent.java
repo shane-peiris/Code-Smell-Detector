@@ -398,7 +398,7 @@ public class SeperateFileContent {
                   
                   //md[methodCount+1].methodLineCount=methodLineCount;
 
-                if(((curLine.startsWith("{")) | (curLine.startsWith("\\s+{")))&(meth==1))
+                if(((curLine.startsWith("{")) | (curLine.startsWith("\\s+{")|curLine.endsWith("{")))&(meth==1))
                 {
                     level++;
                     meth++;
@@ -445,7 +445,7 @@ public class SeperateFileContent {
                 }
             }
             //Finn Method Type 2
-            else if((meth==1) & ((curLine.startsWith("{")) | curLine.startsWith("\\s+{")))
+            else if((meth==1) & ((curLine.startsWith("{")) | curLine.startsWith("\\s+{")|curLine.endsWith("{")))
             {
                 level++;
                 meth++;
@@ -515,7 +515,7 @@ public class SeperateFileContent {
                 return "class";
                // System.out.println("------Inside class:------");              
             }
-            else if((curLine.startsWith("{")) | curLine.startsWith("\\s+{"))
+            else if((curLine.startsWith("{")) | curLine.startsWith("\\s+{")|curLine.endsWith("{"))
             {
                 level++;
                 meth++;
@@ -1007,7 +1007,14 @@ public class SeperateFileContent {
 
                 MethodDefinition md = new MethodDefinition();  
                 md = SeperateMethodDetails(md);
+                try
+                {
                 md.content = (getEntireCodeBlock(i-1, "method")).toString();
+                }
+                catch(Exception ex)
+                {
+                md.content = (getEntireCodeBlock(i, "method")).toString();
+                }
                 //cd.class_name=curClassIn.toString();  
                 md.startLineNo = i;
                 md.meth_line = LineCount;
