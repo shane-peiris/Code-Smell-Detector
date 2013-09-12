@@ -163,6 +163,8 @@ public class SeperateFileContent {
 //          curLine = curLine.trim().replace("\\s+","");
             curLine = curLine.trim().replace("\\s+","");
             curLine = curLine.replaceAll("\\s+"," ");
+            String chkCurLine = curLine.replaceAll("\"(\\([^)]*\\)|[^\"])*\"", "\"\"");
+            //String chkCurLine = curLine.replaceAll("\"(.*?)\"","\"\"");
             //Identify Class
             //Then get entire relevant code block
             
@@ -202,7 +204,7 @@ public class SeperateFileContent {
             {
             //Finds Class Type 1
             //if(curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?\\s*\\{")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?(.*?)"))
-            if(curLine.matches("(.*?) class (.*?)")|curLine.matches("class (.*?)"))
+            if(chkCurLine.matches("(.*?) class (.*?)")|chkCurLine.matches("class (.*?)"))
             {
                 curLine = curLine.replaceAll("public ","");
                 curLine = curLine.replaceAll("protected ","");
@@ -373,7 +375,7 @@ public class SeperateFileContent {
 
             //Finn Method Type 1
             //\b\w*\s*\w*\(.*?\)\s*\{[\x21-\x7E\s]*\}
-            else if(curLine.matches("((public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient)+\\s)+[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?[^\\}]*\\}?") & (level==1) )
+            else if(chkCurLine.matches("((public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient)+\\s)+[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?[^\\}]*\\}?") & (level==1) )
             {
                 meth++; 
                 //methodLineCount=0;
@@ -398,7 +400,7 @@ public class SeperateFileContent {
                   
                   //md[methodCount+1].methodLineCount=methodLineCount;
 
-                if(((curLine.startsWith("{")) | (curLine.startsWith("\\s+{")|curLine.endsWith("{")))&(meth==1))
+                if(((chkCurLine.startsWith("{")) | (chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{")))&(meth==1))
                 {
                     level++;
                     meth++;
@@ -445,13 +447,13 @@ public class SeperateFileContent {
                 }
             }
             //Finn Method Type 2
-            else if((meth==1) & ((curLine.startsWith("{")) | curLine.startsWith("\\s+{")|curLine.endsWith("{")))
+            else if((meth==1) & ((chkCurLine.startsWith("{")) | chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{")))
             {
                 level++;
                 meth++;
                 //methodCount++;
                 
-                if((curLine.endsWith("}")))
+                if((chkCurLine.endsWith("}")))
                     {
                         level--;
                         meth--;
@@ -481,12 +483,12 @@ public class SeperateFileContent {
             }
 
             //Find Class Type 2
-            else if(clzFlag==1 & ((curLine.startsWith("{")) | curLine.startsWith("\\s+{")))
+            else if(clzFlag==1 & ((chkCurLine.startsWith("{")) | chkCurLine.startsWith("\\s+{")))
             {
                 level++;
                 clzFlag=2;
                 
-                if((curLine.endsWith("}")))
+                if((chkCurLine.endsWith("}")))
                     {
                         level--;
                         meth--;
@@ -515,12 +517,12 @@ public class SeperateFileContent {
                 return "class";
                // System.out.println("------Inside class:------");              
             }
-            else if((curLine.startsWith("{")) | curLine.startsWith("\\s+{")|curLine.endsWith("{"))
+            else if((chkCurLine.startsWith("{")) | chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{"))
             {
                 level++;
                 meth++;
                 
-                if((curLine.endsWith("}")))
+                if((chkCurLine.endsWith("}")))
                     {
                         level--;
                         meth--;
@@ -546,7 +548,7 @@ public class SeperateFileContent {
                     }
                 
             }
-            else if((curLine.endsWith("}")))
+            else if((chkCurLine.endsWith("}")))
             {
                 level--;
                 meth--;
@@ -571,12 +573,12 @@ public class SeperateFileContent {
                 }          
             }
 
-            if(meth>=1 & !curLine.equals(""))
+            if(meth>=1 & !chkCurLine.equals(""))
             {
                 //methodLineCount++;
                 //System.out.println("meth lines"+methodLineCount);
             }
-            if(clzFlag>=1 & !curLine.equals(""))
+            if(clzFlag>=1 & !chkCurLine.equals(""))
             {
               /// classLineCount++;
               // System.out.println("line:"+mLine);
@@ -906,6 +908,7 @@ public class SeperateFileContent {
             
             //Remove Generic Comments
             curLine = removeComments(curLine);
+            curLine = curLine.replaceAll("\"(\\([^)]*\\)|[^\"])*\"", "\"\"");
             //Ignore Complex Comments            
             String lineToProcess = curLine.trim().replaceAll("\\s+", " ");
             StringTokenizer splitter = new StringTokenizer(lineToProcess, delims, true);
@@ -922,7 +925,7 @@ public class SeperateFileContent {
 
                         //New Complex Comment Handler END            
 
-                         if ((word.charAt(0)=='/') &(fw_flag_c==0))
+                        if ((word.charAt(0)=='/') &(fw_flag_c==0))
                         {
                             fw_flag_c=1;
                             continue;
@@ -959,17 +962,24 @@ public class SeperateFileContent {
         }
         
         int classCount=0;
+        String blockType= "";
         for(i=0;i<FileContentLineByLineWithoutComments.size();i++)
         {
-            String blockType = getCodeBlockType(FileContentLineByLineWithoutComments.elementAt(i)).toString();
             
+            try
+            {
+            blockType = getCodeBlockType(FileContentLineByLineWithoutComments.elementAt(i)).toString();
+            }
+            catch(Exception ex)
+            {}
             //countVariables("1",FileContentLineByLineWithoutComments.elementAt(i).toString(),"");
                         
 
             
             switch(blockType) {
                 case "class":
-                    
+                try
+                {
                 ClassDefinition cd = new ClassDefinition();  
                 cd = SeperateClassDetails(cd);
                 try
@@ -1000,11 +1010,14 @@ public class SeperateFileContent {
                 classCount++;
                 FilevariableCount = FilevariableCount + variableCount;
                 variableCount = 0;
-                
+                }
+                catch(Exception ex)
+                {}
                 break;
 
                 case "method":
-
+                try
+                {
                 MethodDefinition md = new MethodDefinition();  
                 md = SeperateMethodDetails(md);
                 try
@@ -1052,6 +1065,9 @@ public class SeperateFileContent {
                 //FilevariableCount = FilevariableCount + variableCount;
                 
                 variableCount = 0;
+                }
+                catch(Exception ex)
+                {}
                 break;
             }
                     
