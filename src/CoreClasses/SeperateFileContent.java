@@ -94,20 +94,31 @@ public class SeperateFileContent {
          }
         
         
-          curLine = curLine.replaceAll("public ","");
-          curLine = curLine.replaceAll("protected ","");
-          curLine = curLine.replaceAll("private ","");
-          curLine = curLine.replaceAll("static ","");
-          curLine = curLine.trim().replace("\\s+","");
-          
+//          curLine = curLine.replaceAll("public ","");
+//          curLine = curLine.replaceAll("protected ","");
+//          curLine = curLine.replaceAll("private ","");
+//          curLine = curLine.replaceAll("static ","");
+//          curLine = curLine.trim().replace("\\s+","");
+            curLine = curLine.trim().replace("\\s+","");
+            curLine = curLine.trim().replace("\\s+","");
             //Identify Class
             //Then get entire relevant code block
+            
+//            if(((curLine.matches("(public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient)(.*?)"))|curLine.matches("class (.*?)")) & !(curLine.matches("(switch|for|if|while|repeat|until)(.*?)")))
+//            {
+            
             try
             {
             //Finds Class Type 1
-            if(curLine.matches("class (.*?)"))
+            if(curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?\\s*\\{"))
             {
 
+                curLine = curLine.replaceAll("public ","");
+                curLine = curLine.replaceAll("protected ","");
+                curLine = curLine.replaceAll("private ","");
+                curLine = curLine.replaceAll("static ","");
+                curLine = curLine.trim().replace("\\s+","");
+                
                 //classLineCount=0;
                 clzFlag++;
                 try
@@ -200,9 +211,17 @@ public class SeperateFileContent {
 
 
             //Find Constructor Type 1
-            else if(((curLine.matches(curClassIn+"\\s+\\((.*?)\\)(.*?)"))|(curLine.matches(curClassIn+"\\((.*?)\\)(.*?)"))) & (level==1))
+            //else if(((curLine.matches(curClassIn+"\\s+[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?[^\\}]*\\}?"))|(curLine.matches(curClassIn+"[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?[^\\}]*\\}?"))) & (level==1))
+            //else if(((curLine.matches(curClassIn+"\\s+[\\w\\<\\>\\[\\]]+\\s+(\\w+) *\\([^\\)]*\\) *(\\{?|[^;]"))|(curLine.matches(curClassIn+"[\\w\\<\\>\\[\\]]+\\s+(\\w+) *\\([^\\)]*\\) *(\\{?|[^;]"))) & (level==1))
+             else if(((curLine.matches(curClassIn+"\\s+\\((.*?)\\)(.*?)"))|(curLine.matches(curClassIn+"\\((.*?)\\)(.*?)"))) & (level==1))
             {
                 meth++;  
+                
+                curLine = curLine.replaceAll("public ","");
+                curLine = curLine.replaceAll("protected ","");
+                curLine = curLine.replaceAll("private ","");
+                curLine = curLine.replaceAll("static ","");
+                
                 //methodLineCount=0; 
                   methodName = curLine.substring(0,curLine.indexOf("("));
                   //System.out.println(methodName);
@@ -214,7 +233,7 @@ public class SeperateFileContent {
                  // md[methodCount+1].returnType = "Null";
                   //md[methodCount+1].methodLineCount=methodLineCount;
                   //md[methodCount+1].methodLineCount=methodLineCount;  
-                if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
+                if(((curLine.startsWith("{")) | (curLine.startsWith("\\s+{")))&(meth==1))
                 {
                     level++;
                     meth++;
@@ -262,11 +281,17 @@ public class SeperateFileContent {
             }        
 
             //Finn Method Type 1
-            else if(curLine.matches("(.*?)\\((.*?)\\)(.*?)") & (level==1) )
+            //\b\w*\s*\w*\(.*?\)\s*\{[\x21-\x7E\s]*\}
+            else if(curLine.matches("((public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient)+\\s)+[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?[^\\}]*\\}?") & (level==1) )
             {
                 meth++; 
                 //methodLineCount=0;
 
+                curLine = curLine.replaceAll("public ","");
+                curLine = curLine.replaceAll("protected ","");
+                curLine = curLine.replaceAll("private ","");
+                curLine = curLine.replaceAll("static ","");
+                
                   retType = curLine.substring(0,curLine.indexOf(" "));
                  // System.out.println(retType);
                   curLine = curLine.replace(retType + " ", "");                       
@@ -282,7 +307,7 @@ public class SeperateFileContent {
                   
                   //md[methodCount+1].methodLineCount=methodLineCount;
 
-                if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
+                if(((curLine.startsWith("{")) | (curLine.startsWith("\\s+{")))&(meth==1))
                 {
                     level++;
                     meth++;
@@ -329,20 +354,73 @@ public class SeperateFileContent {
                 }
             }
             //Finn Method Type 2
-            else if((meth==1) & (curLine.contains("{")))
+            else if((meth==1) & ((curLine.startsWith("{")) | curLine.startsWith("\\s+{")))
             {
                 level++;
                 meth++;
                 //methodCount++;
+                
+                if((curLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }
+                
                 return "method";
                 //System.out.println("***Inside Method:***");
             }
 
             //Find Class Type 2
-            else if(clzFlag==1 & curLine.contains("{"))
+            else if(clzFlag==1 & ((curLine.startsWith("{")) | curLine.startsWith("\\s+{")))
             {
                 level++;
                 clzFlag=2;
+                
+                if((curLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }
+                
+                
                 return "class";
                // System.out.println("------Inside class:------");              
             }
@@ -350,6 +428,32 @@ public class SeperateFileContent {
             {
                 level++;
                 meth++;
+                
+                if((curLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }
+                
             }
             else if((curLine.endsWith("}")))
             {
@@ -392,7 +496,7 @@ public class SeperateFileContent {
           }
           catch(Exception ex)
           {}
-        
+//            }
             //Identify Method
             
             //Identify If
@@ -441,11 +545,73 @@ public class SeperateFileContent {
             mLine= FileContentLineByLineWithoutComments.elementAt(i);
             mLine = mLine.trim().replaceAll("\\s+", " ");
           
-          if((x==0)& !(mLine.endsWith("{") | mLine.endsWith("{(.*?)")))
+          if((x==0))
           {
+              //& !(mLine.startsWith("{")
                 blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";  
                 
-                if(clzFlag==2 & meth==0 & level==1)
+                try
+                {
+                    if(clzFlag==2 & meth==0 & level==1)
+                    {
+                        countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global",i);
+                    }
+                    else if(clzFlag==2 & meth==0 & level>1)
+                    {
+                        countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
+                    }
+
+                    if(clzFlag>1 & meth>1)
+                    {
+                        countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
+                    }
+                    else if((FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0)
+                    {
+                        countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
+                    }
+                }
+                catch(Exception ex)
+                {}
+                x++;
+                
+                if(((mLine.startsWith("{")) | (mLine.matches("(.*?)\\{(.*?)\\}"))|(mLine.matches("(.*?)\\{(.*?)")))& !(mLine.contains("(if)")))
+                {
+                    level++;
+                    if((mLine.endsWith("}"))& !(mLine.contains("(if)")))
+                    {
+                    level--;     
+                    }
+                }
+                
+                //level++;
+                continue;
+          }
+            
+//          if ((!(mLine.matches("(.*?)\\(\"(.*?)\"\\)(.*?)"))& (mLine.contains("\\{"))|mLine.contains("\\}")))  
+//          {
+                  
+            if(((mLine.startsWith("{")) | (mLine.matches("(.*?)\\{(.*?)\\}"))|(mLine.matches("(.*?)\\{(.*?)")))& !(mLine.contains("(if)")))
+            {
+                level++;
+                if((mLine.endsWith("}"))& !(mLine.contains("(if)")))
+                {
+                level--;     
+                }
+            }
+            else if((mLine.endsWith("}"))& !(mLine.contains("(if)")))
+            {
+                level--;     
+            }
+//          }
+          blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
+          
+          try
+          {
+                if(clzFlag==2 & meth==0 & level==1 & mLine.matches("(.*?)\\((.*?)\\)(.*?)"))
+                {
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
+                }
+              else if(clzFlag==2 & meth==0 & level==1)
                 {
                     countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global",i);
                 }
@@ -453,53 +619,19 @@ public class SeperateFileContent {
                 {
                     countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
                 }
-              
+
+
                 if(clzFlag>1 & meth>1)
                 {
                     countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
                 }
-                else if((FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0)
+                else if( (FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
                 {
                     countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
                 }
-                x++;
-                continue;
           }
-            
-            
-          if((mLine.endsWith("{")|mLine.endsWith("\\s+{")) | (mLine.startsWith("{")|mLine.startsWith("\\s+{")) )
-          {
-              level++;
-          }
-          else if(mLine.endsWith("}")| mLine.endsWith("(.*?)}"))
-          {
-              level--;     
-          }
-          
-          blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
-          
-          if(clzFlag==2 & meth==0 & level==1 & mLine.matches("(.*?)\\((.*?)\\)(.*?)"))
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
-            }
-          else if(clzFlag==2 & meth==0 & level==1)
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global",i);
-            }
-            else if(clzFlag==2 & meth==0 & level>1)
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
-            }
-
-
-            if(clzFlag>1 & meth>1)
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
-            }
-            else if( (FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
-            }
+          catch(Exception ex)
+          {}
           
           x++;
           LineCount++;
@@ -533,7 +665,8 @@ public class SeperateFileContent {
     public MethodDefinition SeperateMethodDetails(MethodDefinition md_temp)
     {
         md_temp = new MethodDefinition();
-        
+        try
+        {
         md_temp.method_name = chk_method_details.elementAt(0).toString();
         md_temp.accessType = chk_method_details.elementAt(1).toString();
         try
@@ -548,12 +681,17 @@ public class SeperateFileContent {
         md_temp.methType = "Constructor";
         }
         
+        }
+        catch(Exception ex)
+        {}
         return md_temp;
     }
     
     public ClassDefinition SeperateClassDetails(ClassDefinition cd_temp)
     {
         int ele_id=0;
+        try
+        {
             if(!(chk_class_details.elementAt(ele_id).toString().substring(5)).equals(" "))
             {
                 cd_temp = new ClassDefinition();
@@ -605,6 +743,9 @@ public class SeperateFileContent {
                 }
                 
             }
+        }
+        catch(Exception ex)
+        {}
             return cd_temp;
     }
      
