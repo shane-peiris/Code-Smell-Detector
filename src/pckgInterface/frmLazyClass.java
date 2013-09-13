@@ -4,6 +4,8 @@
  */
 package pckgInterface;
 
+import CoreClasses.ClassDefinition;
+import CoreClasses.MethodDefinition;
 import CoreClasses.SeperateFileContent;
 
 /**
@@ -37,21 +39,72 @@ public class frmLazyClass extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton1 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jButton1.setText("Show");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(180, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(161, 161, 161))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(237, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(40, 40, 40))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int cCount=SFC.ClassCodeBlocks.size();
+        int mCount=SFC.MethodCodeBlocks.size();
+        System.out.println(SFC.variableList.size());
+        
+        int vCount=0;//variable count
+        
+         for (int c=0;c<SFC.ClassCodeBlocks.size();c++)
+         {
+            vCount = vCount + ((ClassDefinition)(SFC.ClassCodeBlocks.elementAt(c))).variableCount;
+         } 
+         
+         int avgMethCount=mCount/cCount;
+         int avgVariableCount=vCount/cCount;
+        
+        
+        for(int c=0;c<SFC.ClassCodeBlocks.size();c++)
+        {
+                int curMethCount = Integer.parseInt(String.valueOf(((ClassDefinition)(SFC.ClassCodeBlocks.elementAt(c))).method_names.size()));
+                int curVarCount = Integer.parseInt(String.valueOf(((ClassDefinition)(SFC.ClassCodeBlocks.elementAt(c))).variableCount));
+                
+                
+                if(((curMethCount)<=((2/3)*avgMethCount))&((curVarCount)<=((2/3)*avgVariableCount)))
+                {
+                    System.out.println(((ClassDefinition)(SFC.ClassCodeBlocks.elementAt(c))).class_name);
+                    
+                }
+                else
+                {
+                System.out.println("Not lazy class");
+                }
+        
+        }
+         
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -88,5 +141,6 @@ public class frmLazyClass extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     // End of variables declaration//GEN-END:variables
 }
