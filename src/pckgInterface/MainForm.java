@@ -299,6 +299,9 @@ public class MainForm extends javax.swing.JFrame {
                     vCount = vCount + ((ClassDefinition)(SFC.ClassCodeBlocks.elementAt(c))).variableCount;
                 }
                 
+                
+                
+                
                 txtVariableCount.setText(String.valueOf(vCount));
                 
                 System.out.println(SFC.MethodCodeBlocks);
