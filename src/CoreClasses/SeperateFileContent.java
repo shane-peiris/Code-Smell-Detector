@@ -197,6 +197,18 @@ public class SeperateFileContent {
 
             }
             
+            String s = chkCurLine;
+            
+            String regex = "\"(\\([^)]*\\)|[^\"])*\"";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(s);
+            while(m.find()) {
+                chkCurLine = chkCurLine.trim().replace(s.substring(m.start(),m.end()), "\"\"");
+                //System.out.println(s.substring(m.start(),m.end()));
+                
+            }
+            
+            
             
             if(flag_lit==0)
             {
@@ -400,7 +412,7 @@ public class SeperateFileContent {
                   
                   //md[methodCount+1].methodLineCount=methodLineCount;
 
-                if(((chkCurLine.startsWith("{")) | (chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{")))&(meth==1))
+                if(((chkCurLine.startsWith("{")) | (chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{")|chkCurLine.matches("(.*?)\\{(.*?)\\}")))&(meth==1))
                 {
                     level++;
                     meth++;
@@ -517,7 +529,7 @@ public class SeperateFileContent {
                 return "class";
                // System.out.println("------Inside class:------");              
             }
-            else if((chkCurLine.startsWith("{")) | chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{"))
+            else if((chkCurLine.startsWith("{")) | chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{")|chkCurLine.matches("(.*?)\\{(.*?)\\}"))
             {
                 level++;
                 meth++;
@@ -671,11 +683,11 @@ public class SeperateFileContent {
             Matcher m = p.matcher(s);
             while(m.find()) {
                 mLine = mLine.trim().replace(s.substring(m.start(),m.end()), "\"\"");
-                System.out.println(s.substring(m.start(),m.end()));
-                System.out.println(mLine);
+                //System.out.println(s.substring(m.start(),m.end()));
+                
             }
             
-            
+            //System.out.println(mLine);
             mLine = mLine.replaceAll("\"(\\([^)]*\\)|[^\"])*\"", "\"\"");
             //if(flag_lit==0 | mLine.matches("[;\\s]+if[\\s*|\\(]"))
             //{  
@@ -710,7 +722,7 @@ public class SeperateFileContent {
                 {}
                 x++;
                 
-                if(((mLine.startsWith("{")) | (mLine.matches("(.*?)\\{(.*?)\\}"))|(mLine.matches("(.*?)\\{(.*?)"))))
+                if(((mLine.startsWith("{")) | (mLine.matches("(.*?)\\{(.*?)\\}(.*?)"))|(mLine.matches("(.*?)\\{(.*?)"))))
                 {
                     level++;
                     if((mLine.endsWith("}")))
@@ -726,7 +738,7 @@ public class SeperateFileContent {
 //          if ((!(mLine.matches("(.*?)\\(\"(.*?)\"\\)(.*?)"))& (mLine.contains("\\{"))|mLine.contains("\\}")))  
 //          {
                   
-            if((mLine.startsWith("{")) | mLine.startsWith("\\s+{")|mLine.endsWith("{"))
+            if((mLine.startsWith("{")) | mLine.startsWith("\\s+{")|mLine.endsWith("{")| (mLine.matches("(.*?)\\{(.*?)\\}(.*?)"))|(mLine.matches("(.*?)\\{(.*?)")))
             {
                 level++;
                 
@@ -908,7 +920,26 @@ public class SeperateFileContent {
             
             //Remove Generic Comments
             curLine = removeComments(curLine);
+            String LineToAdd = curLine;
+            
+            
+            
+            
+            String s = curLine;
+            
+            String regex = "\"(\\([^)]*\\)|[^\"])*\"";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(s);
+            while(m.find()) {
+                curLine = curLine.trim().replace(s.substring(m.start(),m.end()), "\"\"");
+                //System.out.println(s.substring(m.start(),m.end()));
+                
+            }
+            
+            System.out.println(curLine);
+            
             curLine = curLine.replaceAll("\"(\\([^)]*\\)|[^\"])*\"", "\"\"");
+            
             //Ignore Complex Comments            
             String lineToProcess = curLine.trim().replaceAll("\\s+", " ");
             StringTokenizer splitter = new StringTokenizer(lineToProcess, delims, true);
@@ -951,7 +982,7 @@ public class SeperateFileContent {
 
                         //New Complex Comment Handler END
                 if(x==0)
-                    FileContentLineByLineWithoutComments.add(curLine);
+                    FileContentLineByLineWithoutComments.add(LineToAdd);
                 x++;
                  //getCodeBlockType(curLine); 
             }    
@@ -1058,6 +1089,14 @@ public class SeperateFileContent {
                 
                 
                 cdTemp.method_names.add(md);
+                
+                
+//                for(int v=0;v<variableList.size();v++)
+//                {
+//                    cdTemp.ClassvariableList.add(variableList.elementAt(v));
+//                }
+//                
+//                cdTemp.variableCount =cdTemp.variableCount + variableCount;
                 ClassCodeBlocks.removeElementAt(classCount-1);
                 ClassCodeBlocks.add(classCount-1, cdTemp);
                 MethodCodeBlocks.add(md);
