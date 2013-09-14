@@ -5,6 +5,7 @@
 package pckgInterface;
 
 import CoreClasses.SeperateFileContent;
+import java.util.Vector;
 
 /**
  *
@@ -17,14 +18,17 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
      */
     SeperateFileContent SFC = new SeperateFileContent();
     MainForm MF = new MainForm();
-    
-    public frmCodeSmellMenu() {
+    public Vector<Object> SFCBlocks=new Vector<Object>();
+    public frmCodeSmellMenu() 
+    {
         initComponents();
     }
-    public frmCodeSmellMenu(SeperateFileContent SFCTemp, MainForm MFTemp) {
+    public frmCodeSmellMenu(SeperateFileContent SFCTemp, MainForm MFTemp, Vector SFCBlocksTemp) 
+    {
         
         SFC = SFCTemp;
         MF = MFTemp;
+        SFCBlocks = SFCBlocksTemp;
         initComponents();
     }
 
@@ -111,7 +115,7 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
 
     private void btnLazyClassDetectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLazyClassDetectorActionPerformed
         // TODO add your handling code here:
-        frmLazyClass LC = new frmLazyClass(SFC,this);
+        frmLazyClass LC = new frmLazyClass(SFC,this,SFCBlocks);
         LC.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnLazyClassDetectorActionPerformed
@@ -119,7 +123,7 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
     private void btnBloatedCodesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBloatedCodesActionPerformed
         // TODO add your handling code here:
         
-        frmDetectBloatedCodes DBC = new frmDetectBloatedCodes(SFC,this);
+        frmDetectBloatedCodes DBC = new frmDetectBloatedCodes(SFC,this,SFCBlocks);
         DBC.setVisible(true);
         this.setVisible(false);
         
@@ -127,7 +131,7 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
 
     private void btnDuplicateCodeDetectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDuplicateCodeDetectorActionPerformed
         // TODO add your handling code here:
-        frmDuplicatedCode DC = new frmDuplicatedCode(SFC,this);
+        frmDuplicatedCode DC = new frmDuplicatedCode(SFC,this,SFCBlocks);
         DC.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnDuplicateCodeDetectorActionPerformed

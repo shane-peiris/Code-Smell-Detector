@@ -8,6 +8,7 @@ import CoreClasses.ClassDefinition;
 import CoreClasses.MethodDefinition;
 import CoreClasses.SeperateFileContent;
 import Smells.LazyClasses;
+import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,13 +24,15 @@ public class frmLazyClass extends javax.swing.JFrame {
      */
     SeperateFileContent SFC = new SeperateFileContent();
     frmCodeSmellMenu CSM = new frmCodeSmellMenu();
+    public Vector<Object> SFCBlocks=new Vector<Object>();
     public frmLazyClass() {
         initComponents();
     }
-    public frmLazyClass(SeperateFileContent SFCTemp, frmCodeSmellMenu CSMemp) {
+    public frmLazyClass(SeperateFileContent SFCTemp, frmCodeSmellMenu CSMemp, Vector SFCBlocksTemp) {
         
         SFC = SFCTemp;
         CSM = CSMemp;
+        SFCBlocks = SFCBlocksTemp;
         initComponents();
     }
     /**
@@ -57,8 +60,11 @@ public class frmLazyClass extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
@@ -167,8 +173,8 @@ public class frmLazyClass extends javax.swing.JFrame {
                             .addComponent(lblavgVarCount)))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -186,7 +192,8 @@ public class frmLazyClass extends javax.swing.JFrame {
         //lblSmellInfo.setText("Shown below is a list of Long Methods taking 80 Lines as the average length of a method.");
         LazyClasses LC = new LazyClasses();
         
-        DisplayTableData(LC.getLargeClasses(SFC));
+        //DisplayTableData(LC.getLargeClasses(SFC,SFCBlocks));
+        DisplayTableData(LC.getLargeClasses(SFCBlocks));
         lblavgMethCount.setText(String.valueOf(LC.avgMethCount));
         lblavgVarCount.setText(String.valueOf(LC.avgVariableCount)); 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -199,24 +206,40 @@ public class frmLazyClass extends javax.swing.JFrame {
 
         
             String selectedRowClassName=String.valueOf(tblShowLazyMethodData.getModel().getValueAt(tblShowLazyMethodData.getSelectedRow(), 0));
-            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLazyMethodData.getModel().getValueAt(tblShowLazyMethodData.getSelectedRow(), 3)));
+            String selectedRowFileName=String.valueOf(tblShowLazyMethodData.getModel().getValueAt(tblShowLazyMethodData.getSelectedRow(), 1));
+            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLazyMethodData.getModel().getValueAt(tblShowLazyMethodData.getSelectedRow(), 4)));
             int StartLineNo=0;
             String ClassName="";
 
-            for(int m=0;m<SFC.ClassCodeBlocks.size();m++)
+            
+            String fileName = selectedRowFileName;
+           // String fileData="";
+            for(int sf=0;sf<SFCBlocks.size();sf++)
             {
-                StartLineNo = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).startLineNo;
-                ClassName = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).class_name;
-
-                if((ClassName.equals(selectedRowClassName))&((StartLineNo==selectedRowStartLine)))
+                if((((SeperateFileContent)SFCBlocks.elementAt(sf)).fileName).equals(fileName))
                 {
-                    txtCodeVeiw.setText(((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).content.toString());
-                    
-                    
-                    
+                        
+                        SeperateFileContent SFCTemp = (SeperateFileContent)SFCBlocks.elementAt(sf);
+            
+                        SFC = SFCTemp;
+            
+            
+                        for(int m=0;m<SFC.ClassCodeBlocks.size();m++)
+                        {
+                            StartLineNo = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).startLineNo;
+                            ClassName = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).class_name;
+
+                            if((ClassName.equals(selectedRowClassName))&((StartLineNo==selectedRowStartLine)))
+                            {
+                                txtCodeVeiw.setText(((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).content.toString());
+
+
+
+                            }
+                        }
+
                 }
             }
-
         
 
     }//GEN-LAST:event_tblShowLazyMethodDataMouseClicked
@@ -227,6 +250,11 @@ public class frmLazyClass extends javax.swing.JFrame {
         lblavgMethCount.setText("0");
         lblavgVarCount.setText("0");
     }//GEN-LAST:event_formWindowOpened
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        // TODO add your handling code here:
+        CSM.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments

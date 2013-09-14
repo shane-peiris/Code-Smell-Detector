@@ -26,14 +26,16 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
      */
     SeperateFileContent SFC = new SeperateFileContent();
     frmCodeSmellMenu CSM = new frmCodeSmellMenu();
+    public Vector<Object> SFCBlocks=new Vector<Object>();
     public frmDetectBloatedCodes() {
         initComponents();
     }
     
-    public frmDetectBloatedCodes(SeperateFileContent SFCTemp, frmCodeSmellMenu CSMemp) {
+    public frmDetectBloatedCodes(SeperateFileContent SFCTemp, frmCodeSmellMenu CSMemp, Vector SFCBlocksTemp) {
         
         SFC = SFCTemp;
         CSM = CSMemp;
+        SFCBlocks = SFCBlocksTemp;
         initComponents();
     }
 
@@ -207,8 +209,8 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
         if (selectedSmell.equals("Long Method"))
         {
             lblSmellInfo.setText("Shown below is a list of Long Methods taking 80 Lines as the \n average length of a method.");
-            DisplayTableData(BC.getLongMethods(SFC));
-            
+            //DisplayTableData(BC.getLongMethods(SFC,SFCBlocks));
+            DisplayTableData(BC.getLongMethods(SFCBlocks));
             
         }
         else if (selectedSmell.equals("Large Class"))
@@ -217,7 +219,8 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
 "NOC: means the number of component (method and attributes)\n" +
 "\n" +
 "Large Class = ((LOC>=700)|((LOC>=350)&(NOC>=20)))");
-            DisplayTableData(BC.getLargeClasses(SFC));
+            //DisplayTableData(BC.getLargeClasses(SFC,SFCBlocks));
+            DisplayTableData(BC.getLargeClasses(SFCBlocks));
             //getLargeClasses();
         }
         else if (selectedSmell.equals("Long Parameter List"))
@@ -228,7 +231,8 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
 "N = number of parameters of m\n" +
 "M = number of methods in C\n" +
 "AVERAGE_PARAMETERS = (∑ n° parameters of a method)/M, for all the methods in C.");
-            DisplayTableData(BC.getLongParameterLists(SFC));
+            //DisplayTableData(BC.getLongParameterLists(SFC,SFCBlocks));
+            DisplayTableData(BC.getLongParameterLists(SFCBlocks));
            
         }
         
@@ -249,38 +253,69 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
         if (selectedSmell.equals("Long Method"))
         {
             String selectedRowMethodName=String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 0));
-            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 3)));
+            String selectedRowFileName=String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 2));
+            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 4)));
             int StartLineNo=0;
             String MethName="";
             
-            for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+            
+             String fileName = selectedRowFileName;
+           // String fileData="";
+            for(int sf=0;sf<SFCBlocks.size();sf++)
             {
-                StartLineNo = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).startLineNo;
-                MethName = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).method_name;
-                 
-                if((MethName.equals(selectedRowMethodName))&((StartLineNo==selectedRowStartLine)))
+                if((((SeperateFileContent)SFCBlocks.elementAt(sf)).fileName).equals(fileName))
                 {
-                    txtCodeVeiw.setText(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).content.toString());
+                        
+                        SeperateFileContent SFCTemp = (SeperateFileContent)SFCBlocks.elementAt(sf);
+            
+                        SFC = SFCTemp;
+            
+            
+                        for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+                        {
+                            StartLineNo = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).startLineNo;
+                            MethName = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).method_name;
+
+                            if((MethName.equals(selectedRowMethodName))&((StartLineNo==selectedRowStartLine)))
+                            {
+                                txtCodeVeiw.setText(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).content.toString());
+                            }
+                        }
                 }
             }
-            
             
         }
         else if (selectedSmell.equals("Large Class"))
         {
             String selectedRowClassName=String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 0));
-            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 4)));
+            String selectedRowFileName=String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 2));
+            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 5)));
             int StartLineNo=0;
             String ClassName="";
             
-             for(int m=0;m<SFC.ClassCodeBlocks.size();m++)
+            
+             String fileName = selectedRowFileName;
+           // String fileData="";
+            for(int sf=0;sf<SFCBlocks.size();sf++)
             {
-                StartLineNo = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).startLineNo;
-                ClassName = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).class_name;
-                 
-                if((ClassName.equals(selectedRowClassName))&((StartLineNo==selectedRowStartLine)))
+                if((((SeperateFileContent)SFCBlocks.elementAt(sf)).fileName).equals(fileName))
                 {
-                    txtCodeVeiw.setText(((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).content.toString());
+                        
+                        SeperateFileContent SFCTemp = (SeperateFileContent)SFCBlocks.elementAt(sf);
+            
+                        SFC = SFCTemp;
+            
+            
+                        for(int m=0;m<SFC.ClassCodeBlocks.size();m++)
+                       {
+                           StartLineNo = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).startLineNo;
+                           ClassName = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).class_name;
+
+                           if((ClassName.equals(selectedRowClassName))&((StartLineNo==selectedRowStartLine)))
+                           {
+                               txtCodeVeiw.setText(((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).content.toString());
+                           }
+                       }
                 }
             }
             
@@ -288,18 +323,34 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
         else if (selectedSmell.equals("Long Parameter List"))
         {
             String selectedRowMethodName=String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 0));
-            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 3)));
+            String selectedRowFileName=String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 2));
+            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 4)));
             int StartLineNo=0;
             String MethName="";
             
-            for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+            
+             String fileName = selectedRowFileName;
+           // String fileData="";
+            for(int sf=0;sf<SFCBlocks.size();sf++)
             {
-                StartLineNo = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).startLineNo;
-                MethName = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).method_name;
-                 
-                if((MethName.equals(selectedRowMethodName))&((StartLineNo==selectedRowStartLine)))
+                if((((SeperateFileContent)SFCBlocks.elementAt(sf)).fileName).equals(fileName))
                 {
-                    txtCodeVeiw.setText(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).content.toString());
+                        
+                        SeperateFileContent SFCTemp = (SeperateFileContent)SFCBlocks.elementAt(sf);
+            
+                        SFC = SFCTemp;
+            
+            
+                        for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+                        {
+                            StartLineNo = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).startLineNo;
+                            MethName = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).method_name;
+
+                            if((MethName.equals(selectedRowMethodName))&((StartLineNo==selectedRowStartLine)))
+                            {
+                                txtCodeVeiw.setText(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).content.toString());
+                            }
+                        }
                 }
             }
            

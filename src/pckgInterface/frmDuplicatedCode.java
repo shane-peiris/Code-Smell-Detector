@@ -26,15 +26,25 @@ public class frmDuplicatedCode extends javax.swing.JFrame {
      */
     SeperateFileContent SFC = new SeperateFileContent();
     frmCodeSmellMenu CSM = new frmCodeSmellMenu();
+    public Vector<Object> SFCBlocks=new Vector<Object>();
     public static Highlighter.HighlightPainter painter;
+    
+    public Vector<String> DupLines=new Vector<String>();
+    public Vector<Color> ColorCodes=new Vector<Color>();
     public frmDuplicatedCode() {
         initComponents();
     }
-    public frmDuplicatedCode(SeperateFileContent SFCTemp, frmCodeSmellMenu CSMemp) {
+    public frmDuplicatedCode(SeperateFileContent SFCTemp, frmCodeSmellMenu CSMemp, Vector SFCBlocksTemp) {
         
         SFC = SFCTemp;
         CSM = CSMemp;
+        SFCBlocks = SFCBlocksTemp;
         initComponents();
+        for(int i=0;i<SFCBlocksTemp.size();i++)
+        {
+            //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
+            cmbFileList.addItem(((SeperateFileContent)SFCBlocksTemp.elementAt(i)).fileName);
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,6 +59,10 @@ public class frmDuplicatedCode extends javax.swing.JFrame {
         btnFindDuplicateCodes = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaCodeDisplay = new javax.swing.JTextArea();
+        jLabel9 = new javax.swing.JLabel();
+        cmbFileList = new javax.swing.JComboBox();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtDuplicatedLines = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -72,6 +86,15 @@ public class frmDuplicatedCode extends javax.swing.JFrame {
         txtAreaCodeDisplay.setRows(5);
         jScrollPane1.setViewportView(txtAreaCodeDisplay);
 
+        jLabel9.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
+        jLabel9.setText("Select File");
+
+        cmbFileList.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
+
+        txtDuplicatedLines.setColumns(20);
+        txtDuplicatedLines.setRows(5);
+        jScrollPane2.setViewportView(txtDuplicatedLines);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -80,8 +103,15 @@ public class frmDuplicatedCode extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 611, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(10, 10, 10)
+                        .addComponent(cmbFileList, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnFindDuplicateCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -91,9 +121,16 @@ public class frmDuplicatedCode extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel4)
                 .addGap(48, 48, 48)
-                .addComponent(btnFindDuplicateCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel9))
+                    .addComponent(cmbFileList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnFindDuplicateCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -103,41 +140,83 @@ public class frmDuplicatedCode extends javax.swing.JFrame {
     private void btnFindDuplicateCodesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFindDuplicateCodesActionPerformed
         // TODO add your handling code here:
         
+        String fileName = cmbFileList.getSelectedItem().toString();
         String fileData="";
-        for(int i=0;i<SFC.FileContentLineByLineWithoutComments.size();i++)
-        {
-            fileData = fileData + (i+1)+ "  " +  SFC.getVectorLineDetailsWithoutComments(i) + "\n";
-        }
-
-        txtAreaCodeDisplay.setText(fileData.toString());     
         
-        for(int l=0;l<SFC.FileContentLineByLineWithoutComments.size();l++)
+        DupLines.removeAllElements();
+        ColorCodes.removeAllElements();
+        
+        for(int sf=0;sf<SFCBlocks.size();sf++)
         {
-            String curLine = SFC.FileContentLineByLineWithoutComments.elementAt(l);
-            
-            Random randomGenerator = new Random();
-            int red = randomGenerator.nextInt(255);
-            int green = randomGenerator.nextInt(255);
-            int blue = randomGenerator.nextInt(255);
-
-            Color randomColour = new Color(red,green,blue);
-            
-            painter = new DefaultHighlighter.DefaultHighlightPainter((Color)randomColour);
-            
-            if(!((curLine.contains("{"))|(curLine.contains("}"))|(curLine.contains("else"))|(curLine.contains("catch"))|(curLine.contains("try"))))      
+            if((((SeperateFileContent)SFCBlocks.elementAt(sf)).fileName).equals(fileName))
             {
-                for(int lc=l+1;lc<SFC.FileContentLineByLineWithoutComments.size();lc++)
-                {
-                    if(curLine.equals(SFC.FileContentLineByLineWithoutComments.elementAt(lc)))
-                    {
-                        highlight(txtAreaCodeDisplay, curLine);
-                        System.out.println(SFC.FileContentLineByLineWithoutComments.elementAt(lc));
+                    //cmdViewCodes.setEnabled(true);
+                
+                SeperateFileContent SFCTemp = (SeperateFileContent)SFCBlocks.elementAt(sf);
 
-                    }                
+                SFC = SFCTemp;
+                
+                //String fileData="";
+
+                for(int i=0;i<SFC.FileContentLineByLineWithoutComments.size();i++)
+                {
+                    fileData = fileData + (i+1)+ "  " +  SFC.getVectorLineDetailsWithoutComments(i) + "\n";
+                }
+
+                txtAreaCodeDisplay.setText(fileData.toString());     
+
+                int x=0;
+                
+                for(int l=0;l<SFC.FileContentLineByLineWithoutComments.size();l++)
+                {
+                    String curLine = SFC.FileContentLineByLineWithoutComments.elementAt(l);
+
+                    Random randomGenerator = new Random();
+                    int red = randomGenerator.nextInt(255);
+                    int green = randomGenerator.nextInt(255);
+                    int blue = randomGenerator.nextInt(255);
+
+                    
+                    Color randomColour = new Color(red,green,blue);
+                    
+                    painter = new DefaultHighlighter.DefaultHighlightPainter((Color)randomColour);
+                    x=0;
+                    if(!((curLine.contains("{"))|(curLine.contains("}"))|(curLine.contains("else"))|(curLine.contains("catch"))|(curLine.contains("try"))))      
+                    {
+                        
+                        for(int lc=l+1;lc<SFC.FileContentLineByLineWithoutComments.size();lc++)
+                        {
+                            if(curLine.equals(SFC.FileContentLineByLineWithoutComments.elementAt(lc)))
+                            {
+                                if(x==0)
+                                {
+                                    ColorCodes.add(randomColour);
+                                    DupLines.add(curLine);
+                                }
+                                highlight(txtAreaCodeDisplay, curLine);
+                                System.out.println(SFC.FileContentLineByLineWithoutComments.elementAt(lc));
+                                x++;
+                            }                
+                        }
+                    }
+                }
+                
+                String dupLineContent = "";
+                for(int d=0;d<DupLines.size();d++)
+                {
+                    dupLineContent = dupLineContent + DupLines.elementAt(d)+"\n";
+                }
+                txtDuplicatedLines.setText("");
+                txtDuplicatedLines.setText(dupLineContent);
+                
+                for(int d1=0;d1<DupLines.size();d1++)
+                {
+                    painter = new DefaultHighlighter.DefaultHighlightPainter((Color)ColorCodes.elementAt(d1));
+                    highlight(txtDuplicatedLines, DupLines.elementAt(d1));
+                    //dupLineContent = dupLineContent + DupLines.elementAt(d);
                 }
             }
         }
-        
     }//GEN-LAST:event_btnFindDuplicateCodesActionPerformed
 
     
@@ -202,8 +281,12 @@ public class frmDuplicatedCode extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFindDuplicateCodes;
+    private javax.swing.JComboBox cmbFileList;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea txtAreaCodeDisplay;
+    private javax.swing.JTextArea txtDuplicatedLines;
     // End of variables declaration//GEN-END:variables
 }

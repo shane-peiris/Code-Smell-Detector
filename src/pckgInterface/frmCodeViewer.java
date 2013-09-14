@@ -17,15 +17,15 @@ public class frmCodeViewer extends javax.swing.JFrame {
      */
     
     SeperateFileContent SFC = new SeperateFileContent();
-    MainForm MF = new MainForm();
+    frmFileDetails FD = new frmFileDetails();
     
     public frmCodeViewer() {
         initComponents();
     }
-    public frmCodeViewer(SeperateFileContent SFCTemp, MainForm MFTemp) {
+    public frmCodeViewer(SeperateFileContent SFCTemp, frmFileDetails FDTemp) {
         
         SFC = SFCTemp;
-        MF = MFTemp;
+        FD = FDTemp;
         initComponents();
     }
 
@@ -300,7 +300,7 @@ public class frmCodeViewer extends javax.swing.JFrame {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
-        MF.setVisible(true);
+        FD.setVisible(true);
         
     }//GEN-LAST:event_formWindowClosed
 

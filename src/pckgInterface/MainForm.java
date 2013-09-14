@@ -11,10 +11,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+
 
 /**
  *
@@ -27,6 +33,9 @@ public class MainForm extends javax.swing.JFrame {
 */  
     SeperateFileContent SFC;
     public Vector<Object> SFCBlocks=new Vector<Object>();
+    public int TotFileCount = 0;
+    public int TotFileCountTemp = 0;
+    public String[] path; 
     public MainForm() {
         initComponents();
     }
@@ -60,13 +69,15 @@ public class MainForm extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         btnDetectSmells = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
-        txtClassCount1 = new javax.swing.JTextField();
+        txtFileCount = new javax.swing.JTextField();
         btnFileDetails = new javax.swing.JButton();
+        but_Choose_File1 = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        but_Choose_File.setText("Choose File/Directory");
+        but_Choose_File.setText("Choose File");
         but_Choose_File.setToolTipText("");
         but_Choose_File.setActionCommand("but_Choose_File");
         but_Choose_File.addActionListener(new java.awt.event.ActionListener() {
@@ -101,6 +112,7 @@ public class MainForm extends javax.swing.JFrame {
         jLabel8.setText("Total Line Count (Without Comments & Spaces) :");
 
         btnDetectSmells.setText("Detect Smells");
+        btnDetectSmells.setEnabled(false);
         btnDetectSmells.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDetectSmellsActionPerformed(evt);
@@ -110,6 +122,25 @@ public class MainForm extends javax.swing.JFrame {
         jLabel9.setText("File Count : ");
 
         btnFileDetails.setText("File Details");
+        btnFileDetails.setEnabled(false);
+        btnFileDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFileDetailsActionPerformed(evt);
+            }
+        });
+
+        but_Choose_File1.setText("Choose Directory");
+        but_Choose_File1.setToolTipText("");
+        but_Choose_File1.setActionCommand("but_Choose_File");
+        but_Choose_File1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but_Choose_File1ActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setFont(new java.awt.Font("Serif", 0, 24)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("C o d e    S m e l l    D e t e c t o r");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -120,62 +151,68 @@ public class MainForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtMethodCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtClassCount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(txtConstructorCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtTotalLineCountWithComments, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtVariableCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel8)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtTotalLineCountWithoutComments, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtFileSize, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel9)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtClassCount1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnDetectSmells, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnFileDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDetectSmells, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnFileDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(but_Choose_File)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)))
+                        .addComponent(but_Choose_File, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(but_Choose_File1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(75, 75, 75)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtMethodCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtClassCount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtConstructorCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTotalLineCountWithComments, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtVariableCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtTotalLineCountWithoutComments, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtFileSize, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFileCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(76, 76, 76)
+                .addComponent(jLabel11)
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtFileURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(but_Choose_File)
-                    .addComponent(btnProcess))
+                    .addComponent(btnProcess)
+                    .addComponent(but_Choose_File1)
+                    .addComponent(but_Choose_File))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtClassCount1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFileCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -232,27 +269,71 @@ public class MainForm extends javax.swing.JFrame {
         return;
     }//GEN-LAST:event_but_Choose_FileActionPerformed
 
+   
+    public void getTotalFileCount(File dir) {
+		try {
+			File[] files = dir.listFiles();
+			for (File file : files) {
+				if (file.isDirectory()) {
+					System.out.println("directory:" + file.getCanonicalPath());                                         
+                                         
+					getTotalFileCount(file);
+				} else {
+                                        if (file.getName().endsWith(".java"))
+                                            TotFileCount++;
+					System.out.println("     file:" + file.getCanonicalPath());
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
+    public void getFileList(File dir) {
+		try {
+			File[] files = dir.listFiles();
+			for (File file : files) {
+				if (file.isDirectory()) {
+					System.out.println("directory:" + file.getCanonicalPath());   
+					getFileList(file);
+				} else {
+                                        if (file.getName().endsWith(".java"))
+                                        {
+                                            path[TotFileCountTemp] = file.getAbsolutePath();
+                                            TotFileCountTemp++;
+                                        }
+					System.out.println("     file:" + file.getCanonicalPath());
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
+    
     private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
         
-        String[] path; 
+        
         FileReader fileRead=null;
         String fileData="";
         String line="";
         
         int TotClassCount=0;
         int TotMethodCount=0;
+        int TotVarCount=0;
         int TotLineCountWithComments=0;
         int TotLineCountWithoutCommnets=0;
         int TotConstructorCount=0;
-        int TotFileSizeCount = 0;
-        int TotFileCount = 0;
-        
+        long TotFileSizeCount = 0;
+        SFCBlocks.removeAllElements();
+        TotFileCount=0;
+        TotFileCountTemp = 0;
         
         try 
         {
             
             
-                if(txtFileURL.getText().endsWith(".java"))
+                if(txtFileURL.getText().endsWith(".txt"))
                 {
                     path= new String[1];
                     path[0] = txtFileURL.getText();
@@ -261,17 +342,31 @@ public class MainForm extends javax.swing.JFrame {
                 else
                 {
                     File folder = new File(txtFileURL.getText());
-                    File[] listOfFiles = folder.listFiles();
-                    path = new String[listOfFiles.length];
-                   
-                    for (int i = 0; i < listOfFiles.length; i++) {
-                      File file = listOfFiles[i];
-                      if (file.isFile() && file.getName().endsWith(".java")) {
-                            path[i] = file.getPath();
-                            TotFileCount++;
-                        /* do somthing with content */
-                      } 
-                    }
+                    getTotalFileCount(folder);
+                    
+                    path = new String[TotFileCount];
+                    getFileList(folder);
+                    
+                    
+//                    File[] listOfFiles = folder.listFiles();
+//                    path = new String[listOfFiles.length];
+//                   
+//                    for (int i = 0; i < listOfFiles.length; i++) {
+//                      File file = listOfFiles[i];
+//                      
+//                      if (file.isFile() && file.getName().endsWith(".java")) {
+//                            path[i] = file.getAbsolutePath();
+//                            TotFileCount++;
+//                        /* do somthing with content */
+//                      } 
+//                      else if(file.isDirectory())
+//                      {
+//                          
+//                      }
+//                      
+//                    }
+                    
+                    
                 }
                 
                 
@@ -279,6 +374,9 @@ public class MainForm extends javax.swing.JFrame {
                 for(int fc=0;fc<path.length;fc++)
                 {
                 
+                    btnDetectSmells.setEnabled(true);
+                    btnFileDetails.setEnabled(true);
+                    
                     File f = new File(path[fc]);
                     fileRead = new FileReader(path[fc]);
                     BufferedReader bufferRead = new BufferedReader(fileRead);                
@@ -292,6 +390,8 @@ public class MainForm extends javax.swing.JFrame {
                     }              
                     bufferRead.close();
                     SFC.ScanContent();
+                    SFC.fileName = f.getName();
+                    SFC.fileSize = f.length();
                     SFCBlocks.add(SFC);
     //                for(int i=0;i<SFC.FileContentLineByLine.size();i++)
     //                {
@@ -299,8 +399,8 @@ public class MainForm extends javax.swing.JFrame {
     //                }
     //                
     //                txtAreaCodeDisplay.setText(fileData.toString());
-
-                    txtClassCount.setText(String.valueOf(SFC.ClassCodeBlocks.size()));
+                    TotClassCount = TotClassCount + SFC.ClassCodeBlocks.size();
+                    //txtClassCount.setText(String.valueOf(SFC.ClassCodeBlocks.size()));
 
                     int mCount=0;//Method Count
                     int cCount=0;//Constructor Count
@@ -316,16 +416,20 @@ public class MainForm extends javax.swing.JFrame {
                                 mCount++;
                             }
                     }
+                    
+                    TotMethodCount = TotMethodCount + mCount;
+                    //txtMethodCount.setText(String.valueOf(mCount));
+                    TotConstructorCount = TotConstructorCount + cCount;
+                    //txtConstructorCount.setText(String.valueOf(cCount));
 
-                    txtMethodCount.setText(String.valueOf(mCount));
-                    txtConstructorCount.setText(String.valueOf(cCount));
 
 
-
-
-                    txtFileSize.setText(String.valueOf(f.length())+" bytes");
-                    txtTotalLineCountWithComments.setText(String.valueOf(SFC.FileContentLineByLine.size()));
-                    txtTotalLineCountWithoutComments.setText(String.valueOf(SFC.FileContentLineByLineWithoutComments.size()));
+                    TotFileSizeCount = TotFileSizeCount + f.length();
+                    //txtFileSize.setText(String.valueOf(f.length())+" bytes");
+                    TotLineCountWithComments = TotLineCountWithComments + SFC.FileContentLineByLine.size();
+                    //txtTotalLineCountWithComments.setText(String.valueOf(SFC.FileContentLineByLine.size()));
+                    TotLineCountWithoutCommnets = TotLineCountWithoutCommnets + SFC.FileContentLineByLineWithoutComments.size();
+                    //txtTotalLineCountWithoutComments.setText(String.valueOf(SFC.FileContentLineByLineWithoutComments.size()));
 
                     int vCount = 0; //variable Count
                     for (int c=0;c<SFC.ClassCodeBlocks.size();c++)
@@ -335,12 +439,22 @@ public class MainForm extends javax.swing.JFrame {
 
 
 
-
-                    txtVariableCount.setText(String.valueOf(vCount));
+                    TotVarCount = TotVarCount + vCount;
+                    
 
                     System.out.println(SFC.MethodCodeBlocks);
                     System.out.println(SFC.ClassCodeBlocks);
                 }
+                
+                txtFileCount.setText(String.valueOf(TotFileCount));
+                txtFileSize.setText(String.valueOf(TotFileSizeCount) + " bytes");
+                txtTotalLineCountWithoutComments.setText(String.valueOf(TotLineCountWithComments));
+                txtTotalLineCountWithComments.setText(String.valueOf(TotLineCountWithoutCommnets));
+                txtVariableCount.setText(String.valueOf(TotVarCount));
+                txtMethodCount.setText(String.valueOf(TotMethodCount));
+                txtConstructorCount.setText(String.valueOf(TotConstructorCount));
+                txtClassCount.setText(String.valueOf(TotClassCount));
+                
     }   
             catch (Exception ex) 
         {
@@ -351,11 +465,31 @@ public class MainForm extends javax.swing.JFrame {
     private void btnDetectSmellsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetectSmellsActionPerformed
         // TODO add your handling code here:
         
-        frmCodeSmellMenu CSM = new frmCodeSmellMenu(SFC,this);
+        frmCodeSmellMenu CSM = new frmCodeSmellMenu(SFC,this,SFCBlocks);
         CSM.setVisible(true);
         this.setVisible(false);
         
     }//GEN-LAST:event_btnDetectSmellsActionPerformed
+
+    private void btnFileDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileDetailsActionPerformed
+        // TODO add your handling code here:
+        frmFileDetails FD = new frmFileDetails(SFC,this,SFCBlocks);
+        FD.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnFileDetailsActionPerformed
+
+    private void but_Choose_File1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but_Choose_File1ActionPerformed
+        // TODO add your handling code here:
+        JFileChooser f = new JFileChooser();
+        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
+        f.showSaveDialog(null);
+
+        String filename = f.getSelectedFile().toString();
+        txtFileURL.setText(filename.toString());
+        
+        //System.out.println(f.getCurrentDirectory());
+        //System.out.println(f.getSelectedFile());
+    }//GEN-LAST:event_but_Choose_File1ActionPerformed
         
     /**
      * @param args the command line arguments
@@ -398,7 +532,9 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton btnFileDetails;
     private javax.swing.JButton btnProcess;
     private javax.swing.JButton but_Choose_File;
+    private javax.swing.JButton but_Choose_File1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -408,8 +544,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField txtClassCount;
-    private javax.swing.JTextField txtClassCount1;
     private javax.swing.JTextField txtConstructorCount;
+    private javax.swing.JTextField txtFileCount;
     private javax.swing.JTextField txtFileSize;
     private javax.swing.JTextField txtFileURL;
     private javax.swing.JTextField txtMethodCount;

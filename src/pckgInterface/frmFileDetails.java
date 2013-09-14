@@ -4,6 +4,11 @@
  */
 package pckgInterface;
 
+import CoreClasses.ClassDefinition;
+import CoreClasses.MethodDefinition;
+import CoreClasses.SeperateFileContent;
+import java.util.Vector;
+
 /**
  *
  * @author Shane
@@ -13,10 +18,25 @@ public class frmFileDetails extends javax.swing.JFrame {
     /**
      * Creates new form frmFileDetails
      */
+    SeperateFileContent SFC = new SeperateFileContent();
+    MainForm MF = new MainForm();
+    public Vector<Object> SFCBlocks=new Vector<Object>();
     public frmFileDetails() {
         initComponents();
     }
-
+    public frmFileDetails(SeperateFileContent SFCTemp, MainForm MFemp, Vector SFCBlocksTemp) {
+        
+        SFC = SFCTemp;
+        MF = MFemp;
+        SFCBlocks = SFCBlocksTemp;
+        initComponents();
+        for(int i=0;i<SFCBlocksTemp.size();i++)
+        {
+            //ClassDefinition cdTemp = (ClassDefinition)SFC.getClassDetails(i);
+            cmbFileList.addItem(((SeperateFileContent)SFCBlocksTemp.elementAt(i)).fileName);
+        }
+        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -43,12 +63,20 @@ public class frmFileDetails extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        cmbSmellList = new javax.swing.JComboBox();
+        cmbFileList = new javax.swing.JComboBox();
         jLabel9 = new javax.swing.JLabel();
         btnShowDetails = new javax.swing.JButton();
         cmdViewCodes = new javax.swing.JButton();
+        txtFileName = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         txtAreaCodeDisplay.setColumns(20);
         txtAreaCodeDisplay.setLineWrap(true);
@@ -73,7 +101,7 @@ public class frmFileDetails extends javax.swing.JFrame {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("File Summary");
 
-        cmbSmellList.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
+        cmbFileList.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
 
         jLabel9.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
         jLabel9.setText("Select File");
@@ -86,11 +114,18 @@ public class frmFileDetails extends javax.swing.JFrame {
         });
 
         cmdViewCodes.setText("View Codes");
+        cmdViewCodes.setEnabled(false);
         cmdViewCodes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmdViewCodesActionPerformed(evt);
             }
         });
+
+        jLabel10.setText("File Name :");
+
+        jLabel11.setFont(new java.awt.Font("Serif", 0, 24)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("F i l e    D e t a i l s");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -103,64 +138,76 @@ public class frmFileDetails extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(48, 48, 48)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(124, 124, 124)
+                                        .addComponent(cmdViewCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(txtMethodCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(txtClassCount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(txtConstructorCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtTotalLineCountWithComments, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtVariableCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jLabel8)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(txtTotalLineCountWithoutComments, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                            .addComponent(jLabel7)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(txtFileSize, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel10)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtFileName))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                            .addComponent(txtMethodCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(txtClassCount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addComponent(txtConstructorCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(txtTotalLineCountWithComments, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(txtVariableCount, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(jLabel8)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(txtTotalLineCountWithoutComments, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                        .addComponent(jLabel7)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(txtFileSize, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                                .addGap(7, 7, 7))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(124, 124, 124)
-                                .addComponent(cmdViewCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addGap(10, 10, 10)
-                        .addComponent(cmbSmellList, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbFileList, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnShowDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(83, Short.MAX_VALUE)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(4, 4, 4)
                         .addComponent(jLabel9))
-                    .addComponent(cmbSmellList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbFileList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnShowDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(17, 17, 17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(txtFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(32, 32, 32)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtClassCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
@@ -188,7 +235,7 @@ public class frmFileDetails extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
                             .addComponent(txtFileSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(62, 62, 62)
+                        .addGap(35, 35, 35)
                         .addComponent(cmdViewCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20))
@@ -196,44 +243,6 @@ public class frmFileDetails extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnShowDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowDetailsActionPerformed
-        // TODO add your handling code here:
-
-        String selectedSmell = cmbSmellList.getSelectedItem().toString();
-        BloatedCodes BC = new BloatedCodes();
-        //Long Method
-        //Large Class
-        //Long Parameter List
-
-        if (selectedSmell.equals("Long Method"))
-        {
-            lblSmellInfo.setText("Shown below is a list of Long Methods taking 80 Lines as the \n average length of a method.");
-            DisplayTableData(BC.getLongMethods(SFC));
-
-        }
-        else if (selectedSmell.equals("Large Class"))
-        {
-            lblSmellInfo.setText("Shown below is a list of Large Class\nLOC = means the number lines of code\n" +
-                "NOC: means the number of component (method and attributes)\n" +
-                "\n" +
-                "Large Class = ((LOC>=700)|((LOC>=350)&(NOC>=20)))");
-            DisplayTableData(BC.getLargeClasses(SFC));
-            //getLargeClasses();
-        }
-        else if (selectedSmell.equals("Long Parameter List"))
-        {
-            lblSmellInfo.setText("Shown below is a list of Methods with Long Parameter List \n(Given a method m in a class C, the method has a Long Parameter List if:\n" +
-                "(((N>2)&(N>AVERAGE PARAMETERS+2))|(N>10))\n" +
-                "where:\n" +
-                "N = number of parameters of m\n" +
-                "M = number of methods in C\n" +
-                "AVERAGE_PARAMETERS = (∑ n° parameters of a method)/M, for all the methods in C.");
-            DisplayTableData(BC.getLongParameterLists(SFC));
-
-        }
-
-    }//GEN-LAST:event_btnShowDetailsActionPerformed
 
     private void cmdViewCodesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdViewCodesActionPerformed
         // TODO add your handling code here:
@@ -243,6 +252,78 @@ public class frmFileDetails extends javax.swing.JFrame {
         this.setVisible(false);
 
     }//GEN-LAST:event_cmdViewCodesActionPerformed
+
+    private void btnShowDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowDetailsActionPerformed
+        // TODO add your handling code here:
+        
+        String fileName = cmbFileList.getSelectedItem().toString();
+        String fileData="";
+        for(int sf=0;sf<SFCBlocks.size();sf++)
+        {
+            if((((SeperateFileContent)SFCBlocks.elementAt(sf)).fileName).equals(fileName))
+            {
+                    cmdViewCodes.setEnabled(true);
+                
+                    SeperateFileContent SFCTemp = (SeperateFileContent)SFCBlocks.elementAt(sf);
+                      
+                    SFC = SFCTemp;
+                    for(int i=0;i<SFCTemp.FileContentLineByLine.size();i++)
+                    {
+                        fileData = fileData + (i+1)+ "  " +  SFCTemp.getVectorLineDetailsOrg(i) + "\n";
+                    }
+                    
+                    txtAreaCodeDisplay.setText(fileData.toString());
+                    //TotClassCount = TotClassCount + SFCTemp.ClassCodeBlocks.size();
+                    txtClassCount.setText(String.valueOf(SFCTemp.ClassCodeBlocks.size()));
+
+                    int mCount=0;//Method Count
+                    int cCount=0;//Constructor Count
+
+                    for(int m=0;m<SFCTemp.MethodCodeBlocks.size();m++)
+                    {
+                            if(((MethodDefinition)SFCTemp.MethodCodeBlocks.elementAt(m)).return_type.equals(""))
+                            {
+                                cCount++;
+                            }
+                            else
+                            {
+                                mCount++;
+                            }
+                    }
+                    
+                    //TotMethodCount = TotMethodCount + mCount;
+                    txtMethodCount.setText(String.valueOf(mCount));
+                    //TotConstructorCount = TotConstructorCount + cCount;
+                    txtConstructorCount.setText(String.valueOf(cCount));
+
+                    txtFileName.setText(String.valueOf(SFCTemp.fileName));
+
+                    //TotFileSizeCount = TotFileSizeCount + f.length();
+                    txtFileSize.setText(String.valueOf(SFCTemp.fileSize)+" bytes");
+                    //TotLineCountWithComments = TotLineCountWithComments + SFCTemp.FileContentLineByLine.size();
+                    txtTotalLineCountWithComments.setText(String.valueOf(SFCTemp.FileContentLineByLine.size()));
+                    //TotLineCountWithoutCommnets = TotLineCountWithoutCommnets + SFCTemp.FileContentLineByLineWithoutComments.size();
+                    txtTotalLineCountWithoutComments.setText(String.valueOf(SFCTemp.FileContentLineByLineWithoutComments.size()));
+
+                    int vCount = 0; //variable Count
+                    for (int c=0;c<SFCTemp.ClassCodeBlocks.size();c++)
+                    {
+                        vCount = vCount + ((ClassDefinition)(SFCTemp.ClassCodeBlocks.elementAt(c))).variableCount;
+                    }
+
+
+
+                    //TotVarCount = TotVarCount + vCount;
+                    txtVariableCount.setText(String.valueOf(vCount));
+            }
+        }
+        
+    }//GEN-LAST:event_btnShowDetailsActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        // TODO add your handling code here:
+        MF.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments
@@ -280,9 +361,11 @@ public class frmFileDetails extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnShowDetails;
-    private javax.swing.JComboBox cmbSmellList;
+    private javax.swing.JComboBox cmbFileList;
     private javax.swing.JButton cmdViewCodes;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -295,6 +378,7 @@ public class frmFileDetails extends javax.swing.JFrame {
     private javax.swing.JTextArea txtAreaCodeDisplay;
     private javax.swing.JTextField txtClassCount;
     private javax.swing.JTextField txtConstructorCount;
+    private javax.swing.JTextField txtFileName;
     private javax.swing.JTextField txtFileSize;
     private javax.swing.JTextField txtMethodCount;
     private javax.swing.JTextField txtTotalLineCountWithComments;

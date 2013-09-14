@@ -27,6 +27,9 @@ public class SeperateFileContent {
     public Vector<Object> variableList=new Vector<Object>();
     public Vector<Object> tempVariableListParameter=new Vector<Object>();
     public Vector<Object> tempVariableListPrimitive=new Vector<Object>();
+    
+    public String fileName="";
+    public long fileSize=0;
 
     public String delims = "\t\n,;{}[]().-<>&^%$@!-+\\/*'~\"= ";
     public int fw_flag_c=0;
