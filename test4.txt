@@ -1,0 +1,36 @@
+public class A
+{
+	
+	public void B()	
+	{
+		if(){
+
+		}
+	}
+
+	public String mali()
+	{
+	int x;
+	}
+
+	A()
+	{
+	//int y;
+	}
+
+	public int B()
+	{
+	dcgdfgh
+	sdfsf
+
+	}
+}
+public class B
+{
+	
+	public void C()	
+	{
+
+
+	}
+}

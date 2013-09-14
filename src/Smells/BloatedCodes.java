@@ -117,7 +117,7 @@ public class BloatedCodes {
     
     public DefaultTableModel getLongParameterLists(SeperateFileContent SFC )
     {
-        int MAX_PARAMETER_COUNT=5;
+        //int MAX_PARAMETER_COUNT=5;
         
         
         
@@ -134,9 +134,24 @@ public class BloatedCodes {
         int ParameterCount=0;
         int StartLineNo=0;
         
+        int MethCount = SFC.MethodCodeBlocks.size();
+        int curVarCount=0;
+        int avgParameters=0;
+        
+        
         for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
         {
-            if(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).para_Defs.size()>=MAX_PARAMETER_COUNT)
+            curVarCount = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).para_Defs.size();
+            
+            avgParameters = avgParameters + (curVarCount/MethCount);
+        }
+        
+        for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+        {
+          
+            curVarCount = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).para_Defs.size();  
+            
+            if(((curVarCount>2)&(curVarCount>avgParameters+2))|(curVarCount>10))
             {
                 MethName = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).method_name;
                 ParameterCount = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).para_Defs.size();

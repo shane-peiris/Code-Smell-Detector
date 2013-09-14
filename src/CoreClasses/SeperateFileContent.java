@@ -939,12 +939,47 @@ public class SeperateFileContent {
             System.out.println(curLine);
             
             curLine = curLine.replaceAll("\"(\\([^)]*\\)|[^\"])*\"", "\"\"");
+            String lineToProcess = curLine.trim().replaceAll("\\s+", " ");
+            
+            StringTokenizer splitter2 = new StringTokenizer(lineToProcess, delims, true);
+        
+            //Variable to hold the total alphanumeric token count in the line read    
+            String word2="";
+
+            int flag_lit = 0;
+            while(splitter2.hasMoreTokens())
+            {
+                word2 = splitter2.nextToken();
+
+                int ret2 = check_literal_strings(word2);
+
+                if (ret2 == 0)
+                {
+
+                }
+                else if (ret2 ==1)
+                {
+
+                    flag_lit=1;
+                }
+
+            }
+            
+            
+            
+            
+            
             
             //Ignore Complex Comments            
-            String lineToProcess = curLine.trim().replaceAll("\\s+", " ");
+            
             StringTokenizer splitter = new StringTokenizer(lineToProcess, delims, true);
             int numTokens = splitter.countTokens();
             String word="";
+            
+            
+            
+            
+            
             
             x=0; 
             
@@ -955,31 +990,32 @@ public class SeperateFileContent {
 
 
                         //New Complex Comment Handler END            
+                        if(flag_lit==0)
+                        {
+                            if ((word.charAt(0)=='/') &(fw_flag_c==0))
+                            {
+                                fw_flag_c=1;
+                                continue;
+                            }
+                            if ((word.charAt(0)=='*') &(fw_flag_c==1))
+                            {
+                                fw_flag_c=2;
+                                continue;
+                            }
+                            if ((word.charAt(0)=='*') &(fw_flag_c==2))
+                            {
+                                fw_flag_c=3;
+                                continue;
+                            }
+                            if ((word.charAt(0)=='/') &(fw_flag_c==3))
+                            {
+                                fw_flag_c=0;
+                                continue;
+                            }
 
-                        if ((word.charAt(0)=='/') &(fw_flag_c==0))
-                        {
-                            fw_flag_c=1;
-                            continue;
+                            if ((fw_flag_c==2)|(fw_flag_c==3))
+                                continue;
                         }
-                        if ((word.charAt(0)=='*') &(fw_flag_c==1))
-                        {
-                            fw_flag_c=2;
-                            continue;
-                        }
-                        if ((word.charAt(0)=='*') &(fw_flag_c==2))
-                        {
-                            fw_flag_c=3;
-                            continue;
-                        }
-                        if ((word.charAt(0)=='/') &(fw_flag_c==3))
-                        {
-                            fw_flag_c=0;
-                            continue;
-                        }
-
-                        if ((fw_flag_c==2)|(fw_flag_c==3))
-                            continue;
-
                         //New Complex Comment Handler END
                 if(x==0)
                     FileContentLineByLineWithoutComments.add(LineToAdd);

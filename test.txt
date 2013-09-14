@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import sun.java2d.loops.ProcessPath;
 
 /**
  *
@@ -15,7 +16,6 @@ import java.util.regex.Pattern;
  */
 public class SeperateFileContent {
     
-String pat1="(.*?);";  
     public Vector<String> FileContentLineByLine=new Vector<String>();
     public Vector<String> FileContentLineByLineWithoutComments = new Vector<String>();
 
@@ -23,11 +23,12 @@ String pat1="(.*?);";
     public Vector chk_method_details = new Vector<Object>();
     public Vector<Object> ClassCodeBlocks=new Vector<Object>();
     public Vector<Object> MethodCodeBlocks=new Vector<Object>();
+    //public Vector<Object> AllvariableList=new Vector<Object>();
     public Vector<Object> variableList=new Vector<Object>();
     public Vector<Object> tempVariableListParameter=new Vector<Object>();
     public Vector<Object> tempVariableListPrimitive=new Vector<Object>();
 
-    //public String delims = "\t\n,;{}[]().-<>&^%$@!-+\\/*'~\"= ";
+    public String delims = "\t\n,;{}[]().-<>&^%$@!-+\\/*'~\"= ";
     public int fw_flag_c=0;
 
     public int clzFlag=0;
@@ -42,12 +43,31 @@ String pat1="(.*?);";
     public int FilevariableCount=0;
     public int MethvariableCount=0;
     
-    //public static String[] dataTypes=new String[]{"int","boolean","char","double","float","byte","short","long","String","Vector"};
-    //public static int[] dataTypesCount=new int[]{0,0,0,0,0,0,0,0,0,0};
+    public int flag_1=0;
+    public int flag_2=0;
+    public int flag_3=0;
+    
+    public static String[] dataTypes=new String[]{"int","boolean","char","double","float","byte","short","long","String","Vector"};
+    public static int[] dataTypesCount=new int[]{0,0,0,0,0,0,0,0,0,0};
     
     //public int methodLineCount;
     
-   
+    public void addMethodToVector(int i)
+    {}
+    public void addClassToVector(int i) 
+    {}
+    public void addIfToVector(int i)
+    {}
+    public void addWhileToVector(int i)
+    {}
+    public void addRepeatToVector(int i)
+    {}
+    public void addSwitchToVector(int i)
+    {}
+    public void addForToVector(int i)
+    {}
+    public void addVaraibleToVector(int i)
+    {}
     
     public ClassDefinition getClassDetails(int i) 
     {
@@ -59,6 +79,62 @@ String pat1="(.*?);";
         return (MethodDefinition)MethodCodeBlocks.elementAt(i);
     }
     
+    public int check_literal_strings(String word)
+    {
+        //int ret=0;
+        
+        if((flag_1==0) & (flag_2==0))
+            {
+                if ((word.charAt(0) == '\''))
+                {
+                    flag_1=1;
+                }
+                else if((word.charAt(0) == '\"'))
+                {
+                    flag_2=1;
+                }
+            }
+            else if(flag_1 == 1)
+            {
+                if (!(word.charAt(0) == '\''))
+                {                   
+                    return 0;
+                }
+                else
+                {
+                    flag_1 = 0;
+                    return 1;
+                }
+            }
+            else if(flag_2 == 1)
+            {
+                if (!(word.charAt(0) == '\"'))
+                {
+                    if ((word.charAt(0) == '\\'))
+                    {
+                        flag_3=1;
+                    }
+                    else
+                    {
+                        flag_3=0;
+                    }
+                    return 0;
+                }
+                else
+                {
+                    if ((word.charAt(0) == '\"') & (flag_3==1))
+                    {
+                        flag_3=0;
+                        
+                        return 0;
+                    }                    
+                    flag_2 = 0;
+                    return 1;
+                }
+            }
+        
+        return 2;
+    }
     
     public String getCodeBlockType(String curLine)
     {
@@ -80,20 +156,74 @@ String pat1="(.*?);";
          }
         
         
-          curLine = curLine.replaceAll("public ","");
-          curLine = curLine.replaceAll("protected ","");
-          curLine = curLine.replaceAll("private ","");
-          curLine = curLine.replaceAll("static ","");
-          curLine = curLine.trim().replace("\\s+","");
-          
+//          curLine = curLine.replaceAll("public ","");
+//          curLine = curLine.replaceAll("protected ","");
+//          curLine = curLine.replaceAll("private ","");
+//          curLine = curLine.replaceAll("static ","");
+//          curLine = curLine.trim().replace("\\s+","");
+            curLine = curLine.trim().replace("\\s+","");
+            curLine = curLine.replaceAll("\\s+"," ");
+            String chkCurLine = curLine.replaceAll("\"(\\([^)]*\\)|[^\"])*\"", "\"\"");
+            //String chkCurLine = curLine.replaceAll("\"(.*?)\"","\"\"");
             //Identify Class
             //Then get entire relevant code block
+            
+//            if(((curLine.matches("(public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient)(.*?)"))|curLine.matches("class (.*?)")) & !(curLine.matches("(switch|for|if|while|repeat|until)(.*?)")))
+//            {
+            
+            
+            
+            StringTokenizer splitter = new StringTokenizer(curLine, delims, true);
+        
+            //Variable to hold the total alphanumeric token count in the line read    
+            String word="";
+
+            int flag_lit = 0;
+            while(splitter.hasMoreTokens())
+            {
+                word = splitter.nextToken();
+
+                int ret2 = check_literal_strings(word);
+
+                if (ret2 == 0)
+                {
+
+                }
+                else if (ret2 ==1)
+                {
+
+                    flag_lit=1;
+                }
+
+            }
+            
+            String s = chkCurLine;
+            
+            String regex = "\"(\\([^)]*\\)|[^\"])*\"";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(s);
+            while(m.find()) {
+                chkCurLine = chkCurLine.trim().replace(s.substring(m.start(),m.end()), "\"\"");
+                //System.out.println(s.substring(m.start(),m.end()));
+                
+            }
+            
+            
+            
+            if(flag_lit==0)
+            {
             try
             {
             //Finds Class Type 1
-            if(curLine.matches("class (.*?)"))
+            //if(curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?\\s*\\{")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?")|curLine.matches("\\s*(public|private)\\s+class\\s+(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?(.*?)"))
+            if(chkCurLine.matches("(.*?) class (.*?)")|chkCurLine.matches("class (.*?)"))
             {
-
+                curLine = curLine.replaceAll("public ","");
+                curLine = curLine.replaceAll("protected ","");
+                curLine = curLine.replaceAll("private ","");
+                curLine = curLine.replaceAll("static ","");
+                curLine = curLine.trim().replace("\\s+","");
+                
                 //classLineCount=0;
                 clzFlag++;
                 try
@@ -186,9 +316,17 @@ String pat1="(.*?);";
 
 
             //Find Constructor Type 1
-            else if(((curLine.matches(curClassIn+"\\s+\\((.*?)\\)(.*?)"))|(curLine.matches(curClassIn+"\\((.*?)\\)(.*?)"))) & (level==1))
+            //else if(((curLine.matches(curClassIn+"\\s+[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?[^\\}]*\\}?"))|(curLine.matches(curClassIn+"[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?[^\\}]*\\}?"))) & (level==1))
+            //else if(((curLine.matches(curClassIn+"\\s+[\\w\\<\\>\\[\\]]+\\s+(\\w+) *\\([^\\)]*\\) *(\\{?|[^;]"))|(curLine.matches(curClassIn+"[\\w\\<\\>\\[\\]]+\\s+(\\w+) *\\([^\\)]*\\) *(\\{?|[^;]"))) & (level==1))
+             else if(((curLine.matches(curClassIn+"\\s+\\((.*?)\\)(.*?)"))|(curLine.matches(curClassIn+"\\((.*?)\\)(.*?)"))) & (level==1))
             {
                 meth++;  
+                
+                curLine = curLine.replaceAll("public ","");
+                curLine = curLine.replaceAll("protected ","");
+                curLine = curLine.replaceAll("private ","");
+                curLine = curLine.replaceAll("static ","");
+                
                 //methodLineCount=0; 
                   methodName = curLine.substring(0,curLine.indexOf("("));
                   //System.out.println(methodName);
@@ -200,12 +338,36 @@ String pat1="(.*?);";
                  // md[methodCount+1].returnType = "Null";
                   //md[methodCount+1].methodLineCount=methodLineCount;
                   //md[methodCount+1].methodLineCount=methodLineCount;  
-                if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
+                if(((curLine.startsWith("{")) | (curLine.startsWith("\\s+{")))&(meth==1))
                 {
                     level++;
                     meth++;
                     //methodCount++;
-
+                    
+                    if((curLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }    
 
                     return "method";
                     //System.out.println("***Inside Method***");
@@ -224,11 +386,17 @@ String pat1="(.*?);";
             }        
 
             //Finn Method Type 1
-            else if(curLine.matches("(.*?)\\((.*?)\\)(.*?)") & (level==1) )
+            //\b\w*\s*\w*\(.*?\)\s*\{[\x21-\x7E\s]*\}
+            else if(chkCurLine.matches("((public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient)+\\s)+[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?[^\\}]*\\}?") & (level==1) )
             {
                 meth++; 
                 //methodLineCount=0;
 
+                curLine = curLine.replaceAll("public ","");
+                curLine = curLine.replaceAll("protected ","");
+                curLine = curLine.replaceAll("private ","");
+                curLine = curLine.replaceAll("static ","");
+                
                   retType = curLine.substring(0,curLine.indexOf(" "));
                  // System.out.println(retType);
                   curLine = curLine.replace(retType + " ", "");                       
@@ -244,12 +412,39 @@ String pat1="(.*?);";
                   
                   //md[methodCount+1].methodLineCount=methodLineCount;
 
-                if((curLine.contains("{"))&(meth==1) & (curLine.substring(curLine.length()-1).equals("{")))
+                if(((chkCurLine.startsWith("{")) | (chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{")|chkCurLine.matches("(.*?)\\{(.*?)\\}")))&(meth==1))
                 {
                     level++;
                     meth++;
                    // methodCount++;
                     //cd[classCount-1].methDefs.add(methodName);
+                    
+                    if((curLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }
+                    
+                    
                     return "method";
                    // System.out.println("***Inside Method:***");
                 }   
@@ -264,29 +459,108 @@ String pat1="(.*?);";
                 }
             }
             //Finn Method Type 2
-            else if((meth==1) & (curLine.contains("{")))
+            else if((meth==1) & ((chkCurLine.startsWith("{")) | chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{")))
             {
                 level++;
                 meth++;
                 //methodCount++;
+                
+                if((chkCurLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }
+                
                 return "method";
                 //System.out.println("***Inside Method:***");
             }
 
             //Find Class Type 2
-            else if(clzFlag==1 & curLine.contains("{"))
+            else if(clzFlag==1 & ((chkCurLine.startsWith("{")) | chkCurLine.startsWith("\\s+{")))
             {
                 level++;
                 clzFlag=2;
+                
+                if((chkCurLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }
+                
+                
                 return "class";
                // System.out.println("------Inside class:------");              
             }
-            else if((curLine.startsWith("{")) | curLine.startsWith("\\s+{"))
+            else if((chkCurLine.startsWith("{")) | chkCurLine.startsWith("\\s+{")|chkCurLine.endsWith("{")|chkCurLine.matches("(.*?)\\{(.*?)\\}"))
             {
                 level++;
                 meth++;
+                
+                if((chkCurLine.endsWith("}")))
+                    {
+                        level--;
+                        meth--;
+                        if(meth==1 & level==1)
+                        {
+                            try
+                            {
+                              //md[methodCount].methodLineCount = methodLineCount;
+                            }
+                            catch(Exception ex){}
+                        }
+                        if(meth==1)
+                        {
+                            meth=0;
+                        }
+                        if(level==0)
+                        {
+                            meth=0;
+                            clzFlag=0;
+                            level=0;
+                            //cd[classCount-1].classLineCount = classLineCount;
+                        } 
+                    }
+                
             }
-            else if((curLine.endsWith("}")))
+            else if((chkCurLine.endsWith("}")))
             {
                 level--;
                 meth--;
@@ -311,12 +585,12 @@ String pat1="(.*?);";
                 }          
             }
 
-            if(meth>=1 & !curLine.equals(""))
+            if(meth>=1 & !chkCurLine.equals(""))
             {
                 //methodLineCount++;
                 //System.out.println("meth lines"+methodLineCount);
             }
-            if(clzFlag>=1 & !curLine.equals(""))
+            if(clzFlag>=1 & !chkCurLine.equals(""))
             {
               /// classLineCount++;
               // System.out.println("line:"+mLine);
@@ -327,7 +601,9 @@ String pat1="(.*?);";
           }
           catch(Exception ex)
           {}
-        
+            }
+          
+//            }
             //Identify Method
             
             //Identify If
@@ -376,11 +652,119 @@ String pat1="(.*?);";
             mLine= FileContentLineByLineWithoutComments.elementAt(i);
             mLine = mLine.trim().replaceAll("\\s+", " ");
           
-          if((x==0)& !(mLine.endsWith("{") | mLine.endsWith("{(.*?)")))
+          StringTokenizer splitter = new StringTokenizer(mLine, delims, true);
+        
+            //Variable to hold the total alphanumeric token count in the line read    
+            String word="";
+
+            int flag_lit = 0;
+            while(splitter.hasMoreTokens())
+            {
+                word = splitter.nextToken();
+
+                int ret2 = check_literal_strings(word);
+
+                if (ret2 == 0)
+                {
+
+                }
+                else if (ret2 ==1)
+                {
+
+                    flag_lit=1;
+                }
+
+            }
+            
+            String s = mLine;
+            
+            String regex = "\"(\\([^)]*\\)|[^\"])*\"";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(s);
+            while(m.find()) {
+                mLine = mLine.trim().replace(s.substring(m.start(),m.end()), "\"\"");
+                //System.out.println(s.substring(m.start(),m.end()));
+                
+            }
+            
+            //System.out.println(mLine);
+            mLine = mLine.replaceAll("\"(\\([^)]*\\)|[^\"])*\"", "\"\"");
+            //if(flag_lit==0 | mLine.matches("[;\\s]+if[\\s*|\\(]"))
+            //{  
+            
+            
+          if((x==0))
           {
+              //& !(mLine.startsWith("{")
                 blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";  
                 
-                if(clzFlag==2 & meth==0 & level==1)
+                try
+                {
+                    if(clzFlag==2 & meth==0 & level==1)
+                    {
+                        countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global",i);
+                    }
+                    else if(clzFlag==2 & meth==0 & level>1)
+                    {
+                        countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
+                    }
+
+                    if(clzFlag>1 & meth>1)
+                    {
+                        countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
+                    }
+                    else if((FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0)
+                    {
+                        countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
+                    }
+                }
+                catch(Exception ex)
+                {}
+                x++;
+                
+                if(((mLine.startsWith("{")) | (mLine.matches("(.*?)\\{(.*?)\\}(.*?)"))|(mLine.matches("(.*?)\\{(.*?)"))))
+                {
+                    level++;
+                    if((mLine.endsWith("}")))
+                    {
+                    level--;     
+                    }
+                }
+                
+                //level++;
+                continue;
+          }
+            
+//          if ((!(mLine.matches("(.*?)\\(\"(.*?)\"\\)(.*?)"))& (mLine.contains("\\{"))|mLine.contains("\\}")))  
+//          {
+                  
+            if((mLine.startsWith("{")) | mLine.startsWith("\\s+{")|mLine.endsWith("{")| (mLine.matches("(.*?)\\{(.*?)\\}(.*?)"))|(mLine.matches("(.*?)\\{(.*?)")))
+            {
+                level++;
+                
+                
+                if((mLine.endsWith("}")))
+                    {
+                        level--;
+                        
+                    }
+                
+            }
+            else if((mLine.endsWith("}")))
+            {
+                level--;
+                          
+            }
+//          }
+          blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
+          
+          try
+          {
+                if(clzFlag==2 & meth==0 & level==1 & mLine.matches("(.*?)\\((.*?)\\)(.*?)"))
+                {
+                    countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
+                }
+              else if(clzFlag==2 & meth==0 & level==1)
                 {
                     countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global",i);
                 }
@@ -388,53 +772,19 @@ String pat1="(.*?);";
                 {
                     countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
                 }
-              
+
+
                 if(clzFlag>1 & meth>1)
                 {
                     countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
                 }
-                else if((FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0)
+                else if( (FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
                 {
                     countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
                 }
-                x++;
-                continue;
           }
-            
-            
-          if((mLine.endsWith("{")|mLine.endsWith("\\s+{")) | (mLine.startsWith("{")|mLine.startsWith("\\s+{")) )
-          {
-              level++;
-          }
-          else if(mLine.endsWith("}")| mLine.endsWith("(.*?)}"))
-          {
-              level--;     
-          }
-          
-          blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n";
-          
-          if(clzFlag==2 & meth==0 & level==1 & mLine.matches("(.*?)\\((.*?)\\)(.*?)"))
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
-            }
-          else if(clzFlag==2 & meth==0 & level==1)
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"global",i);
-            }
-            else if(clzFlag==2 & meth==0 & level>1)
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
-            }
-
-
-            if(clzFlag>1 & meth>1)
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
-            }
-            else if( (FileContentLineByLineWithoutComments.elementAt(i).toString().matches("(.*?)\\((.*?)\\)(.*?)"))& clzFlag>1 & meth>0 )
-            {
-                countVariables("2",FileContentLineByLineWithoutComments.elementAt(i).toString(),"local",i);
-            }
+          catch(Exception ex)
+          {}
           
           x++;
           LineCount++;
@@ -444,6 +794,13 @@ String pat1="(.*?);";
               break;
           }
           
+//            }
+//            else
+//            {
+//                blockDetails =blockDetails + FileContentLineByLineWithoutComments.elementAt(i).toString() + "\n"; 
+//                x++;
+//            
+//            }
           
         }
         
@@ -468,7 +825,8 @@ String pat1="(.*?);";
     public MethodDefinition SeperateMethodDetails(MethodDefinition md_temp)
     {
         md_temp = new MethodDefinition();
-        
+        try
+        {
         md_temp.method_name = chk_method_details.elementAt(0).toString();
         md_temp.accessType = chk_method_details.elementAt(1).toString();
         try
@@ -483,12 +841,17 @@ String pat1="(.*?);";
         md_temp.methType = "Constructor";
         }
         
+        }
+        catch(Exception ex)
+        {}
         return md_temp;
     }
     
     public ClassDefinition SeperateClassDetails(ClassDefinition cd_temp)
     {
         int ele_id=0;
+        try
+        {
             if(!(chk_class_details.elementAt(ele_id).toString().substring(5)).equals(" "))
             {
                 cd_temp = new ClassDefinition();
@@ -540,6 +903,9 @@ String pat1="(.*?);";
                 }
                 
             }
+        }
+        catch(Exception ex)
+        {}
             return cd_temp;
     }
      
@@ -554,11 +920,66 @@ String pat1="(.*?);";
             
             //Remove Generic Comments
             curLine = removeComments(curLine);
-            //Ignore Complex Comments            
+            String LineToAdd = curLine;
+            
+            
+            
+            
+            String s = curLine;
+            
+            String regex = "\"(\\([^)]*\\)|[^\"])*\"";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(s);
+            while(m.find()) {
+                curLine = curLine.trim().replace(s.substring(m.start(),m.end()), "\"\"");
+                //System.out.println(s.substring(m.start(),m.end()));
+                
+            }
+            
+            System.out.println(curLine);
+            
+            curLine = curLine.replaceAll("\"(\\([^)]*\\)|[^\"])*\"", "\"\"");
             String lineToProcess = curLine.trim().replaceAll("\\s+", " ");
+            
+            StringTokenizer splitter2 = new StringTokenizer(lineToProcess, delims, true);
+        
+            //Variable to hold the total alphanumeric token count in the line read    
+            String word2="";
+
+            int flag_lit = 0;
+            while(splitter2.hasMoreTokens())
+            {
+                word2 = splitter2.nextToken();
+
+                int ret2 = check_literal_strings(word2);
+
+                if (ret2 == 0)
+                {
+
+                }
+                else if (ret2 ==1)
+                {
+
+                    flag_lit=1;
+                }
+
+            }
+            
+            
+            
+            
+            
+            
+            //Ignore Complex Comments            
+            
             StringTokenizer splitter = new StringTokenizer(lineToProcess, delims, true);
             int numTokens = splitter.countTokens();
             String word="";
+            
+            
+            
+            
+            
             
             x=0; 
             
@@ -569,34 +990,35 @@ String pat1="(.*?);";
 
 
                         //New Complex Comment Handler END            
+                        if(flag_lit==0)
+                        {
+                            if ((word.charAt(0)=='/') &(fw_flag_c==0))
+                            {
+                                fw_flag_c=1;
+                                continue;
+                            }
+                            if ((word.charAt(0)=='*') &(fw_flag_c==1))
+                            {
+                                fw_flag_c=2;
+                                continue;
+                            }
+                            if ((word.charAt(0)=='*') &(fw_flag_c==2))
+                            {
+                                fw_flag_c=3;
+                                continue;
+                            }
+                            if ((word.charAt(0)=='/') &(fw_flag_c==3))
+                            {
+                                fw_flag_c=0;
+                                continue;
+                            }
 
-                         if ((word.charAt(0)=='/') &(fw_flag_c==0))
-                        {
-                            fw_flag_c=1;
-                            continue;
+                            if ((fw_flag_c==2)|(fw_flag_c==3))
+                                continue;
                         }
-                        if ((word.charAt(0)=='*') &(fw_flag_c==1))
-                        {
-                            fw_flag_c=2;
-                            continue;
-                        }
-                        if ((word.charAt(0)=='*') &(fw_flag_c==2))
-                        {
-                            fw_flag_c=3;
-                            continue;
-                        }
-                        if ((word.charAt(0)=='/') &(fw_flag_c==3))
-                        {
-                            fw_flag_c=0;
-                            continue;
-                        }
-
-                        if ((fw_flag_c==2)|(fw_flag_c==3))
-                            continue;
-
                         //New Complex Comment Handler END
                 if(x==0)
-                    FileContentLineByLineWithoutComments.add(curLine);
+                    FileContentLineByLineWithoutComments.add(LineToAdd);
                 x++;
                  //getCodeBlockType(curLine); 
             }    
@@ -607,20 +1029,34 @@ String pat1="(.*?);";
         }
         
         int classCount=0;
+        String blockType= "";
         for(i=0;i<FileContentLineByLineWithoutComments.size();i++)
         {
-            String blockType = getCodeBlockType(FileContentLineByLineWithoutComments.elementAt(i)).toString();
             
+            try
+            {
+            blockType = getCodeBlockType(FileContentLineByLineWithoutComments.elementAt(i)).toString();
+            }
+            catch(Exception ex)
+            {}
             //countVariables("1",FileContentLineByLineWithoutComments.elementAt(i).toString(),"");
                         
 
             
             switch(blockType) {
                 case "class":
-                    
+                try
+                {
                 ClassDefinition cd = new ClassDefinition();  
                 cd = SeperateClassDetails(cd);
+                try
+                {
                 cd.content = (getEntireCodeBlock(i-1, "class")).toString();
+                }
+                catch(Exception ex)
+                {
+                cd.content = (getEntireCodeBlock(i, "class")).toString();
+                }
                 //cd.class_name=curClassIn.toString();   
                 cd.class_line = LineCount;
                 cd.startLineNo = i;
@@ -641,14 +1077,24 @@ String pat1="(.*?);";
                 classCount++;
                 FilevariableCount = FilevariableCount + variableCount;
                 variableCount = 0;
-                
+                }
+                catch(Exception ex)
+                {}
                 break;
 
                 case "method":
-
+                try
+                {
                 MethodDefinition md = new MethodDefinition();  
                 md = SeperateMethodDetails(md);
+                try
+                {
                 md.content = (getEntireCodeBlock(i-1, "method")).toString();
+                }
+                catch(Exception ex)
+                {
+                md.content = (getEntireCodeBlock(i, "method")).toString();
+                }
                 //cd.class_name=curClassIn.toString();  
                 md.startLineNo = i;
                 md.meth_line = LineCount;
@@ -679,6 +1125,14 @@ String pat1="(.*?);";
                 
                 
                 cdTemp.method_names.add(md);
+                
+                
+//                for(int v=0;v<variableList.size();v++)
+//                {
+//                    cdTemp.ClassvariableList.add(variableList.elementAt(v));
+//                }
+//                
+//                cdTemp.variableCount =cdTemp.variableCount + variableCount;
                 ClassCodeBlocks.removeElementAt(classCount-1);
                 ClassCodeBlocks.add(classCount-1, cdTemp);
                 MethodCodeBlocks.add(md);
@@ -686,6 +1140,9 @@ String pat1="(.*?);";
                 //FilevariableCount = FilevariableCount + variableCount;
                 
                 variableCount = 0;
+                }
+                catch(Exception ex)
+                {}
                 break;
             }
                     
@@ -740,12 +1197,27 @@ String pat1="(.*?);";
           newLine = newLine.replaceAll("private ","");
           newLine = newLine.replaceAll("static ","");
           
+          try
+          {
+            if(newLine.matches("(.*?)=(.*?)\\((.*?)\\)(.*?)"))  
+               newLine = newLine.substring(0,newLine.indexOf("="));
+            if(newLine.matches("(.*?)<(.*?)>(.*?)"))
+            {
+                newLine = newLine.substring(0,newLine.indexOf("<")) + newLine.substring((newLine.indexOf(">"))+1);
+                newLine = newLine + ";";
+            }
+          }
+          catch(Exception ex)
+          {
+          }
+          
           Matcher m = p.matcher(newLine);
          Matcher m1 = p1.matcher(newLine);
          // System.out.println(mLine);
           
           //mLine = mLine.trim().replace("\\s+", "");
-         
+         try
+         {
          if(newLine.matches("(.*?)\\((.*?)\\)(.*?)"))
          {
                 
@@ -758,8 +1230,6 @@ String pat1="(.*?);";
 //                    System.out.println(newLine);  
                     while(m1.find())
                     {
-                        
-                        
                         //System.out.println(m1.group(1)+ "-------------------------------- Primitive 1");
                         if(val.equals("2"))
                             extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo);
@@ -870,7 +1340,9 @@ String pat1="(.*?);";
 
             }
          }
-              
+         }
+         catch(Exception ex)
+         {}
            countNum=1;   
          
      }
@@ -929,6 +1401,7 @@ String pat1="(.*?);";
                                 tempVariableListParameter.add(vd);
                                 variableCount++;
                                 variableList.add(vd);
+                                //AllvariableList.add(vd);
                                 //variableCount++;
                                 //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
                             }
@@ -936,6 +1409,7 @@ String pat1="(.*?);";
                             {
                                 tempVariableListPrimitive.add(vd);
                                 variableList.add(vd);
+                                //AllvariableList.add(vd);
                                 variableCount++;
                                 //System.out.println("Done " + tokens[i] +" " +  md[methodCount+1].getMethodName());
                             }

@@ -37,24 +37,18 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnLargeMethods = new javax.swing.JButton();
-        btnLongMethods = new javax.swing.JButton();
-        btnLongParameterList = new javax.swing.JButton();
         btnLazyClassDetector = new javax.swing.JButton();
         btnBloatedCodes = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        btnDuplicateCodeDetector = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Code Smell List");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
             }
         });
-
-        btnLargeMethods.setText("Large Classes");
-
-        btnLongMethods.setText("Long Methods");
-
-        btnLongParameterList.setText("Long Parameter List");
 
         btnLazyClassDetector.setText("Lazy Class Detector");
         btnLazyClassDetector.addActionListener(new java.awt.event.ActionListener() {
@@ -63,10 +57,21 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
             }
         });
 
-        btnBloatedCodes.setText("Bloated Codes");
+        btnBloatedCodes.setText("Bloated Code Detector");
         btnBloatedCodes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBloatedCodesActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Serif", 0, 24)); // NOI18N
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("C o d e    S m e l l    L i s t");
+
+        btnDuplicateCodeDetector.setText("Duplicate Code Detector");
+        btnDuplicateCodeDetector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDuplicateCodeDetectorActionPerformed(evt);
             }
         });
 
@@ -74,32 +79,26 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(102, 102, 102)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnBloatedCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnLongMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLargeMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLongParameterList, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(140, Short.MAX_VALUE))
+                .addGap(58, 58, 58)
+                .addComponent(btnBloatedCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDuplicateCodeDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(69, Short.MAX_VALUE)
-                .addComponent(btnBloatedCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnLongParameterList, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLargeMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLongMethods, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(168, 168, 168))
+                .addComponent(jLabel4)
+                .addGap(75, 75, 75)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBloatedCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDuplicateCodeDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(330, Short.MAX_VALUE))
         );
 
         pack();
@@ -120,11 +119,18 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
     private void btnBloatedCodesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBloatedCodesActionPerformed
         // TODO add your handling code here:
         
-        frmDetectBloatedCodes CSM = new frmDetectBloatedCodes(SFC,this);
-        CSM.setVisible(true);
+        frmDetectBloatedCodes DBC = new frmDetectBloatedCodes(SFC,this);
+        DBC.setVisible(true);
         this.setVisible(false);
         
     }//GEN-LAST:event_btnBloatedCodesActionPerformed
+
+    private void btnDuplicateCodeDetectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDuplicateCodeDetectorActionPerformed
+        // TODO add your handling code here:
+        frmDuplicatedCode DC = new frmDuplicatedCode(SFC,this);
+        DC.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnDuplicateCodeDetectorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -162,9 +168,8 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBloatedCodes;
-    private javax.swing.JButton btnLargeMethods;
+    private javax.swing.JButton btnDuplicateCodeDetector;
     private javax.swing.JButton btnLazyClassDetector;
-    private javax.swing.JButton btnLongMethods;
-    private javax.swing.JButton btnLongParameterList;
+    private javax.swing.JLabel jLabel4;
     // End of variables declaration//GEN-END:variables
 }

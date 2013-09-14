@@ -1,0 +1,58 @@
+class VariableDefinition
+{
+    public String variableName="";
+    public String variableType="";
+    public String parameterOrPrimitive;
+    
+    public String getVariableName()
+    {
+	public String test="";
+
+        return variableName;
+    }
+    
+    public String getVariableType(String test, int x)
+    {
+        return variableType;
+    }
+    
+    public boolean isParameter()
+    {
+        if(parameterOrPrimitive.equals("Parameter"))
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean isPrimitive()
+    {
+        if(parameterOrPrimitive.equals("Primitive"))
+        {
+            return true;
+        }
+        return false;
+    }    
+}
+
+class ClassDefinition
+{       
+    public String parentClaz="";
+    public String className="";
+    
+   public int getMethodDefinitions()
+   {
+       public String className3="";
+       return methDefinition;
+   }
+
+    public String getParentClassName()
+    {    
+        return parentClaz;
+    }
+    
+    public Vector getInterfaceNames()
+    {    
+        return intNames;
+    }
+}
