@@ -261,7 +261,7 @@ public class MainForm extends javax.swing.JFrame {
                 SFC.ScanContent();
                 for(int i=0;i<SFC.FileContentLineByLineWithoutComments.size();i++)
                 {
-                    fileData = fileData + (i+1)+ " " +  SFC.getVectorLineDetailsWithoutComments(i) + "\n";
+                    fileData = fileData + (i+1)+ "  " +  SFC.getVectorLineDetailsWithoutComments(i) + "\n";
                 }
                 
                 txtAreaCodeDisplay.setText(fileData.toString());

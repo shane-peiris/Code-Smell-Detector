@@ -7,6 +7,7 @@ package pckgInterface;
 import CoreClasses.MethodDefinition;
 import CoreClasses.ClassDefinition;
 import CoreClasses.SeperateFileContent;
+import Smells.BloatedCodes;
 import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -47,13 +48,20 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblShowLongMethodData = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox();
+        cmbSmellList = new javax.swing.JComboBox();
         btnProcess = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtCodeVeiw = new javax.swing.JTextArea();
+        lblSmellInfo = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Detect Bloated Codes");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
@@ -68,9 +76,15 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
 
             }
         ));
+        tblShowLongMethodData.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblShowLongMethodDataMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblShowLongMethodData);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Long Method", "Large Class", "Long Parameter List" }));
+        cmbSmellList.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
+        cmbSmellList.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Long Method", "Large Class", "Long Parameter List" }));
 
         btnProcess.setText("Process");
         btnProcess.addActionListener(new java.awt.event.ActionListener() {
@@ -79,11 +93,30 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Smell to Detect");
+        jLabel1.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
+        jLabel1.setText("Smell Type");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
+        txtCodeVeiw.setColumns(20);
+        txtCodeVeiw.setRows(5);
+        jScrollPane2.setViewportView(txtCodeVeiw);
+
+        lblSmellInfo.setText("(Info)");
+
+        jLabel2.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
+        jLabel2.setText("Code View");
+
+        jLabel3.setFont(new java.awt.Font("Serif", 0, 24)); // NOI18N
+        jLabel3.setText("Select a Smell To Detect");
+
+        jLabel4.setFont(new java.awt.Font("Serif", 0, 24)); // NOI18N
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("B l o a t e d    C o d e    D e t e c t o r");
+
+        jLabel5.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
+        jLabel5.setText("Smell Details");
+
+        jLabel6.setFont(new java.awt.Font("Serif", 0, 12)); // NOI18N
+        jLabel6.setText("*Click on a Smell Detail to View the Code");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -91,33 +124,70 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addGap(10, 10, 10)
+                                    .addComponent(cmbSmellList, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(btnProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(58, 58, 58))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                            .addComponent(lblSmellInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(10, 10, 10)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(10, 10, 10))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(jLabel5)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                        .addComponent(jLabel6)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(63, 63, 63)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(btnProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(jLabel4)
+                        .addGap(58, 58, 58)
+                        .addComponent(jLabel3)
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(jLabel1))
+                            .addComponent(cmbSmellList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(110, 110, 110)
+                        .addComponent(lblSmellInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addContainerGap(77, Short.MAX_VALUE))
         );
 
         pack();
@@ -132,87 +202,113 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
     private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
         // TODO add your handling code here:
         
-        getLongMethods();
-       
-    }//GEN-LAST:event_btnProcessActionPerformed
-    
-//    public DefaultTableModel DisplayTableData(Vector columnNames)
-//    {
-//        Vector dataVec = new Vector();
-//        model = new DefaultTableModel(dataVec, columnNames); 
-//    
-//        return model;
-//    }
-    
-    
-    public void getLongMethods()
-    {
-        int MAX_LONG_METHOD_LINE_COUNT=20;
+        String selectedSmell = cmbSmellList.getSelectedItem().toString();
+        BloatedCodes BC = new BloatedCodes();
+        //Long Method
+//Large Class
+//Long Parameter List
         
-        
-        Vector columnNames = new Vector();        
-        columnNames.add("Method Name");
-        columnNames.add("Class Contain In");
-        columnNames.add("Line Count");
-        columnNames.add("Start Line No");        
-        Vector dataVec = new Vector();
-        DefaultTableModel model = new DefaultTableModel(dataVec, columnNames);  
-        
-        String MethName="";
-        String ClassContain="";
-        int LineCount=0;
-        int StartLineNo=0;
-        
-        for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+        if (selectedSmell.equals("Long Method"))
         {
-            if(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).meth_line>MAX_LONG_METHOD_LINE_COUNT)
-            {
-                MethName = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).method_name;
-                LineCount = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).meth_line;
-                StartLineNo = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).startLineNo;
-                
-                for(int c=0;c<SFC.ClassCodeBlocks.size();c++)
-                {
-                    for(int x=0;x<((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).method_names.size();x++)
-                    {
-                        //(ClassDefinition)SFC.ClassCodeBlocks.elementAt(c))
-                        //((((MethodDefinition)((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).method_names.elementAt(x)).getStartLineNo()).)
-                        if((((MethodDefinition)((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).method_names.elementAt(x)).getMethodName().equals(MethName))&(((MethodDefinition)((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).method_names.elementAt(x)).getStartLineNo()==StartLineNo))
-                        {
-                            ClassContain = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(c)).class_name.toString();
-                            model.addRow(new Object[] {MethName.toString(),ClassContain.toString(),String.valueOf(LineCount),String.valueOf(StartLineNo)});
-                        }
-                    }
-                }
-            }
+            lblSmellInfo.setText("Shown below is a list of Long Methods taking 80 Lines as the average length of a method.");
+            DisplayTableData(BC.getLongMethods(SFC));
+            
+            
+        }
+        else if (selectedSmell.equals("Large Class"))
+        {
+            lblSmellInfo.setText("Shown below is a list of Large Class (More than 700 lines of code or number of componenets greater than 20)");
+            DisplayTableData(BC.getLargeClasses(SFC));
+            //getLargeClasses();
+        }
+        else if (selectedSmell.equals("Long Parameter List"))
+        {
+            lblSmellInfo.setText("Shown below is a list of Methods with more than 5 parameters \n which is considered as a Method with Long Parametere list");
+            DisplayTableData(BC.getLongParameterLists(SFC));
+           
         }
         
         
+    }//GEN-LAST:event_btnProcessActionPerformed
+
+    private void tblShowLongMethodDataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblShowLongMethodDataMouseClicked
+        // TODO add your handling code here:
         
         
+                
+        String selectedSmell = cmbSmellList.getSelectedItem().toString();
+        BloatedCodes BC = new BloatedCodes();
+        //Long Method
+//Large Class
+//Long Parameter List
+        
+        if (selectedSmell.equals("Long Method"))
+        {
+            String selectedRowMethodName=String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 0));
+            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 3)));
+            int StartLineNo=0;
+            String MethName="";
+            
+            for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+            {
+                StartLineNo = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).startLineNo;
+                MethName = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).method_name;
+                 
+                if((MethName.equals(selectedRowMethodName))&((StartLineNo==selectedRowStartLine)))
+                {
+                    txtCodeVeiw.setText(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).content.toString());
+                }
+            }
+            
+            
+        }
+        else if (selectedSmell.equals("Large Class"))
+        {
+            String selectedRowClassName=String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 0));
+            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 4)));
+            int StartLineNo=0;
+            String ClassName="";
+            
+             for(int m=0;m<SFC.ClassCodeBlocks.size();m++)
+            {
+                StartLineNo = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).startLineNo;
+                ClassName = ((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).class_name;
+                 
+                if((ClassName.equals(selectedRowClassName))&((StartLineNo==selectedRowStartLine)))
+                {
+                    txtCodeVeiw.setText(((ClassDefinition)SFC.ClassCodeBlocks.elementAt(m)).content.toString());
+                }
+            }
+            
+        }
+        else if (selectedSmell.equals("Long Parameter List"))
+        {
+            String selectedRowMethodName=String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 0));
+            int selectedRowStartLine=Integer.parseInt(String.valueOf(tblShowLongMethodData.getModel().getValueAt(tblShowLongMethodData.getSelectedRow(), 3)));
+            int StartLineNo=0;
+            String MethName="";
+            
+            for(int m=0;m<SFC.MethodCodeBlocks.size();m++)
+            {
+                StartLineNo = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).startLineNo;
+                MethName = ((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).method_name;
+                 
+                if((MethName.equals(selectedRowMethodName))&((StartLineNo==selectedRowStartLine)))
+                {
+                    txtCodeVeiw.setText(((MethodDefinition)SFC.MethodCodeBlocks.elementAt(m)).content.toString());
+                }
+            }
+           
+        }
         
         
-        
-        
-        
-        
-        
-        
-        //model.addRow(new Object[] {"item1","item1info","item1moreinfo","item1closing"});
-        tblShowLongMethodData.setModel(model);
-    }
+    }//GEN-LAST:event_tblShowLongMethodDataMouseClicked
     
-    public void getLargeClasses()
+    public void DisplayTableData(DefaultTableModel model)
     {
-        
-    
+       tblShowLongMethodData.setModel(model);
     }
-    
-    public void getLongParameterLists()
-    {
-        
-    
-    }
+   
     /**
      * @param args the command line arguments
      */
@@ -249,11 +345,17 @@ public class frmDetectBloatedCodes extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnProcess;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox cmbSmellList;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel lblSmellInfo;
     private javax.swing.JTable tblShowLongMethodData;
+    private javax.swing.JTextArea txtCodeVeiw;
     // End of variables declaration//GEN-END:variables
 }
