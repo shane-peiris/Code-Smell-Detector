@@ -45,6 +45,8 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
         btnBloatedCodes = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         btnDuplicateCodeDetector = new javax.swing.JButton();
+        btnBloatedCodes1 = new javax.swing.JButton();
+        btnFeatureEnvy = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Code Smell List");
@@ -79,30 +81,55 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
             }
         });
 
+        btnBloatedCodes1.setText("Primitve Obsession Detector");
+        btnBloatedCodes1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBloatedCodes1ActionPerformed(evt);
+            }
+        });
+
+        btnFeatureEnvy.setText("Feature Envy Detector");
+        btnFeatureEnvy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFeatureEnvyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(58, 58, 58)
-                .addComponent(btnBloatedCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDuplicateCodeDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(147, 147, 147)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnBloatedCodes1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnBloatedCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnDuplicateCodeDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnFeatureEnvy, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(241, 241, 241))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jLabel4)
-                .addGap(75, 75, 75)
+                .addGap(117, 117, 117)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBloatedCodes, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLazyClassDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBloatedCodes1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDuplicateCodeDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(330, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnFeatureEnvy, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(144, Short.MAX_VALUE))
         );
 
         pack();
@@ -135,6 +162,20 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
         DC.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnDuplicateCodeDetectorActionPerformed
+
+    private void btnBloatedCodes1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBloatedCodes1ActionPerformed
+        // TODO add your handling code here:
+        frmPrimitiveObsession PO = new frmPrimitiveObsession(SFC,this,SFCBlocks);
+        PO.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnBloatedCodes1ActionPerformed
+
+    private void btnFeatureEnvyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFeatureEnvyActionPerformed
+        // TODO add your handling code here:
+        frmFeatureEnvy FE = new frmFeatureEnvy(SFC,this,SFCBlocks);
+        FE.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnFeatureEnvyActionPerformed
 
     /**
      * @param args the command line arguments
@@ -172,7 +213,9 @@ public class frmCodeSmellMenu extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBloatedCodes;
+    private javax.swing.JButton btnBloatedCodes1;
     private javax.swing.JButton btnDuplicateCodeDetector;
+    private javax.swing.JButton btnFeatureEnvy;
     private javax.swing.JButton btnLazyClassDetector;
     private javax.swing.JLabel jLabel4;
     // End of variables declaration//GEN-END:variables

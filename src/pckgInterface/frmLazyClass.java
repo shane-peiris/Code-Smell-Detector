@@ -79,7 +79,7 @@ public class frmLazyClass extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Serif", 0, 24)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("L a z y    C la s s    D e t e c t o r");
+        jLabel4.setText("L a z y    C l a s s    D e t e c t o r");
 
         jLabel5.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
         jLabel5.setText("Lazy Class Details");
