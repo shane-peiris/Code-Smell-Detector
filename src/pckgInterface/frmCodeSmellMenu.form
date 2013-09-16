@@ -31,20 +31,24 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="147" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="btnBloatedCodes1" max="32767" attributes="0"/>
-                  <Component id="btnBloatedCodes" min="-2" pref="184" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="btnLazyClassDetector" max="32767" attributes="0"/>
-                  <Component id="btnDuplicateCodeDetector" min="-2" pref="176" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="btnFeatureEnvy" min="-2" pref="184" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="btnTooManyLiteral" min="-2" pref="184" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="btnBloatedCodes1" max="32767" attributes="0"/>
+                          <Component id="btnBloatedCodes" min="-2" pref="184" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btnLazyClassDetector" max="32767" attributes="0"/>
+                          <Component id="btnDuplicateCodeDetector" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="32767" attributes="0"/>
-              <Component id="btnFeatureEnvy" min="-2" pref="184" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="241" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -63,7 +67,10 @@
                   <Component id="btnDuplicateCodeDetector" alignment="3" min="-2" pref="66" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnFeatureEnvy" min="-2" pref="66" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnFeatureEnvy" alignment="3" min="-2" pref="66" max="-2" attributes="0"/>
+                  <Component id="btnTooManyLiteral" alignment="3" min="-2" pref="66" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace pref="144" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -117,6 +124,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFeatureEnvyActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnTooManyLiteral">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Too Many Literal Detector"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTooManyLiteralActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

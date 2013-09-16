@@ -15,6 +15,7 @@ public class VariableDefinition {
     public String pos="";
     public String accessType="";
     public int startLineNo=0;
+    public int containEqual = 0;
     
     public String getVariableName()
     {
@@ -56,6 +57,11 @@ public class VariableDefinition {
     public int getStartLineNo()
     {
         return startLineNo;
+    }
+    
+    public int getContainEqual()
+    {
+        return containEqual;
     }
     
 }

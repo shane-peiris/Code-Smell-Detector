@@ -1194,16 +1194,20 @@ public class SeperateFileContent {
          
          
         
-        String newLine=line;
+          String newLine=line;
           newLine = newLine.replaceAll("public ","");
           newLine = newLine.replaceAll("protected ","");
           newLine = newLine.replaceAll("private ","");
           newLine = newLine.replaceAll("static ","");
+          int containEqual=0;
           
           try
           {
             if(newLine.matches("(.*?)=(.*?)\\((.*?)\\)(.*?)"))  
+            {
+               containEqual = 1;
                newLine = newLine.substring(0,newLine.indexOf("="));
+            }
             if(newLine.matches("(.*?)<(.*?)>(.*?)"))
             {
                 newLine = newLine.substring(0,newLine.indexOf("<")) + newLine.substring((newLine.indexOf(">"))+1);
@@ -1235,7 +1239,7 @@ public class SeperateFileContent {
                     {
                         //System.out.println(m1.group(1)+ "-------------------------------- Primitive 1");
                         if(val.equals("2"))
-                            extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo);
+                            extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo,containEqual);
                         else
                         {                        
                             String[] tokens=m1.group(1).split("\\s+");   
@@ -1246,13 +1250,13 @@ public class SeperateFileContent {
                 }
                 else
                 {
-                   newLine = newLine.replaceAll("\\)", ",\\)");
+                    newLine = newLine.replaceAll("\\)", ",\\)");
                     m = p.matcher(newLine);
                     
                     while(m.find())
                     {
                         //System.out.println(newLine); 
-                        String[] tokens=m.group(1).split("\\s+");   
+                        String[] tokens=m.group(1).split("\\s+");
                         
                         if(val.equals("2"))
                         {
@@ -1261,7 +1265,7 @@ public class SeperateFileContent {
                                 if(!(m.group(1).matches("(.*?)\\(\\s+")))
                                 {
                                     //System.out.println(m.group(1)+ "-------------------------------- Parameter 2");
-                                    extractVarDetails(m.group(1),"Parameter",pos,accessType,lineNo);
+                                    extractVarDetails(m.group(1),"Parameter",pos,accessType,lineNo,containEqual);
                                 }
                             }
                             catch(Exception ex)
@@ -1292,7 +1296,7 @@ public class SeperateFileContent {
                  //System.out.println(m1.group(1)+ "-------------------------------- Primitive 3");
                 if(val.equals("2"))
                 {
-                    extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo);
+                    extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo,containEqual);
                 }
                 else
                 {
@@ -1332,7 +1336,7 @@ public class SeperateFileContent {
                     if(!(m1.group(1).matches("(.*?)\\s+return\\s+(.*?)")))
                     {
                         //System.out.println(m1.group(1)+ "-------------------------------- Primitive 4");
-                        extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo);
+                        extractVarDetails(m1.group(1),"Primitive",pos,accessType,lineNo,containEqual);
                     }
                 }
                 else
@@ -1350,7 +1354,7 @@ public class SeperateFileContent {
          
      }
     
-     public void extractVarDetails(String dataLine, String vType, String pos,String aType,int LineNo)
+     public void extractVarDetails(String dataLine, String vType, String pos,String aType,int LineNo, int containEqual)
      {
          String varName="";
          String varType="";
@@ -1398,6 +1402,7 @@ public class SeperateFileContent {
                             vd.accessType = aType;
                             vd.pos = pos;
                             vd.startLineNo = LineNo;
+                            vd.containEqual = containEqual;
                             
                             if(vd.isParameter())
                             {

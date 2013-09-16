@@ -193,7 +193,7 @@ public class frmFeatureEnvy extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
     public void DisplayTableData(DefaultTableModel model)
     {
-       tblShowFeatureEnvyResults.setModel(model);
+        tblShowFeatureEnvyResults.setModel(model);
     }
     
     /**

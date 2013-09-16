@@ -333,7 +333,7 @@ public class MainForm extends javax.swing.JFrame {
         {
             
             
-                if(txtFileURL.getText().endsWith(".txt"))
+                if(txtFileURL.getText().endsWith(".java"))
                 {
                     path= new String[1];
                     path[0] = txtFileURL.getText();
